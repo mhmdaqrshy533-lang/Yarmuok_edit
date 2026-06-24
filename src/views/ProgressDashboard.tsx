@@ -82,7 +82,10 @@ export default function ProgressDashboard({ setView }: ProgressDashboardProps) {
             <p className="text-[10px] text-gray-500">استعراض الكشوفات والتقارير</p>
           </button>
 
-          <button className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center hover:shadow-md transition-shadow active:scale-95">
+          <button 
+            onClick={() => setView('student_form')}
+            className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center hover:shadow-md transition-shadow active:scale-95"
+          >
             <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#2a4d8c] to-[#142952] flex items-center justify-center mb-3 shadow-md relative overflow-hidden">
                <div className="absolute inset-0 bg-[#c8994a] opacity-20 mix-blend-overlay"></div>
                <ClipboardEdit className="w-8 h-8 text-white" />

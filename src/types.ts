@@ -1,4 +1,4 @@
-export type ViewState = 'home' | 'monthly_results' | 'progress_dashboard' | 'card_view' | 'student_list' | 'certificate';
+export type ViewState = 'home' | 'monthly_results' | 'progress_dashboard' | 'card_view' | 'student_list' | 'certificate' | 'student_form';
 
 export interface Student {
   id: number;

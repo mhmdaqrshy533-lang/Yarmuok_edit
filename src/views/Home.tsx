@@ -37,7 +37,7 @@ const modules = [
   { title: 'الشهادات النهائية', subtitle: 'إصدار شهادات النجاح النهائية', icon: Award, view: 'certificate' as ViewState, color: 'text-yellow-600', bg: 'bg-yellow-100' },
   { title: 'البطاقات المدرسية', subtitle: 'بطائق تعريفية مدرسية للطلاب', icon: BadgeInfo, view: 'home' as ViewState, color: 'text-sky-600', bg: 'bg-sky-100' },
   { title: 'بطاقات التقدم', subtitle: 'عرض وطباعة بطاقات التقدم', icon: LineChart, view: 'progress_dashboard' as ViewState, color: 'text-orange-600', bg: 'bg-orange-100' },
-  { title: 'المسجل العام', subtitle: 'إدارة بيانات الطلاب والسجلات', icon: Users, view: 'home' as ViewState, color: 'text-teal-600', bg: 'bg-teal-100' },
+  { title: 'المسجل العام', subtitle: 'إدارة بيانات الطلاب والسجلات', icon: Users, view: 'student_list' as ViewState, color: 'text-teal-600', bg: 'bg-teal-100' },
   { title: 'المحاسب المدرسي', subtitle: 'إدارة الرسوم والحسابات', icon: Calculator, view: 'home' as ViewState, color: 'text-cyan-600', bg: 'bg-cyan-100' },
   { title: 'محرر الكتب والملخصات', subtitle: 'تنسيق الكتب والملازم التعليمية', icon: Book, view: 'home' as ViewState, color: 'text-fuchsia-600', bg: 'bg-fuchsia-100' },
   { title: 'محرر الوثائق الرسمية', subtitle: 'إنشاء الخطابات والنماذج الرسمية', icon: ScrollText, view: 'home' as ViewState, color: 'text-stone-600', bg: 'bg-stone-100' },
