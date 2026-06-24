@@ -7,6 +7,8 @@ import CertificateView from './views/CertificateView';
 import StudentList from './views/StudentList';
 import StudentForm from './views/StudentForm';
 import Accounting from './views/Accounting';
+import ExamEditor from './views/ExamEditor';
+import DocEditor from './views/DocEditor';
 import { ViewState } from './types';
 
 export default function App() {
@@ -24,6 +26,8 @@ export default function App() {
         {currentView === 'student_list' && <StudentList setView={setCurrentView} />}
         {currentView === 'student_form' && <StudentForm setView={setCurrentView} />}
         {currentView === 'accounting' && <Accounting setView={setCurrentView} />}
+        {currentView === 'exam_editor' && <ExamEditor setView={setCurrentView} />}
+        {currentView === 'doc_editor' && <DocEditor setView={setCurrentView} />}
       </div>
     </div>
   );
