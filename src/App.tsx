@@ -6,6 +6,7 @@ import CardView from './views/CardView';
 import CertificateView from './views/CertificateView';
 import StudentList from './views/StudentList';
 import StudentForm from './views/StudentForm';
+import Accounting from './views/Accounting';
 import { ViewState } from './types';
 
 export default function App() {
@@ -22,6 +23,7 @@ export default function App() {
         {currentView === 'certificate' && <CertificateView setView={setCurrentView} />}
         {currentView === 'student_list' && <StudentList setView={setCurrentView} />}
         {currentView === 'student_form' && <StudentForm setView={setCurrentView} />}
+        {currentView === 'accounting' && <Accounting setView={setCurrentView} />}
       </div>
     </div>
   );

@@ -1,12 +1,43 @@
-export type ViewState = 'home' | 'monthly_results' | 'progress_dashboard' | 'card_view' | 'student_list' | 'certificate' | 'student_form';
+export type ViewState = 'home' | 'monthly_results' | 'progress_dashboard' | 'card_view' | 'student_list' | 'certificate' | 'student_form' | 'accounting';
 
 export interface Student {
-  id: number;
+  id: string;
   name: string;
-  homework: number | string;
-  attendance: number | string;
-  oral: number | string;
-  written: number | string;
-  total: number;
-  final: number;
+  gender: 'ذكر' | 'أنثى';
+  birthDate: string;
+  birthPlace: string;
+  guardian: string;
+  seatNumber?: string;
+  schoolYear: string;
+  // History
+  grade6?: { year: string; school: string; governorate: string; directorate: string; };
+  grade7?: { year: string; school: string; governorate: string; directorate: string; };
+  grade8?: { year: string; school: string; governorate: string; directorate: string; };
+  // Monthly Grades
+  grades?: {
+    month1?: MonthGrades;
+    month2?: MonthGrades;
+    month3?: MonthGrades;
+  };
+  // Accounting
+  accounting?: {
+    totalFees: number;
+    paidFees: number;
+    transactions?: Transaction[];
+  };
+}
+
+export interface MonthGrades {
+  homework: number | null;
+  attendance: number | null;
+  oral: number | null;
+  written: number | null;
+}
+
+export interface Transaction {
+  id: string;
+  date: string;
+  amount: number;
+  type: 'payment' | 'charge';
+  note: string;
 }
