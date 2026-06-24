@@ -12,11 +12,11 @@ export default defineConfig(() => {
       VitePWA({
         registerType: 'autoUpdate',
         manifest: {
-          name: 'نظام إدارة المدرسة',
-          short_name: 'إدارة المدرسة',
-          description: 'تطبيق لإدارة السجلات المدرسية والنتائج والشهادات بدون إنترنت',
-          theme_color: '#1a3a6c',
-          background_color: '#ffffff',
+          name: 'حقيبة المعلم',
+          short_name: 'حقيبة المعلم',
+          description: 'نظام إدارة شامل للمدرسة يعمل بدون إنترنت',
+          theme_color: '#000000',
+          background_color: '#000000',
           display: 'standalone',
           lang: 'ar',
           dir: 'rtl',

@@ -1,8 +1,10 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { Student } from '../types';
+import { Student, AppSettings } from '../types';
 
 interface AppState {
+  settings: AppSettings;
+  updateSettings: (settings: Partial<AppSettings>) => void;
   students: Student[];
   editingStudentId: string | null;
   setEditingStudentId: (id: string | null) => void;
@@ -14,18 +16,29 @@ interface AppState {
   deleteTransaction: (studentId: string, transactionId: string) => void;
 }
 
+const defaultSettings: AppSettings = {
+  country: 'الجمهورية اليمنية',
+  ministry: 'وزارة التربية والتعليم',
+  governorate: 'محافظة ...',
+  directorate: 'مديرية ...',
+  schoolName: 'مدرسة أبي ذر الغفاري',
+  principalName: 'أ. مدير المدرسة',
+  schoolSealText: 'الختم الرسمي للمدرسة',
+  year: '2025 / 2026'
+};
+
 const defaultStudents: Student[] = [
   {
     id: '1',
-    name: 'محمد عبدالله احمد علي الصبري',
+    name: 'طالب تجريبي 1',
     gender: 'ذكر',
-    birthDate: '2009/01/01',
-    birthPlace: 'تعز • مشرعه وحدنان',
-    guardian: 'عبدالله احمد علي',
+    birthDate: '2010/01/01',
+    birthPlace: 'المدينة',
+    guardian: 'ولي الأمر 1',
     schoolYear: '2025 / 2026',
-    grade6: { year: '2022 / 2023', school: 'شعيب المجبرين', governorate: 'تعز', directorate: 'مشرعه وحدنان' },
-    grade7: { year: '2023 / 2024', school: 'شعيب المجبرين', governorate: 'تعز', directorate: 'مشرعه وحدنان' },
-    grade8: { year: '2024 / 2025', school: 'شعيب المجبرين', governorate: 'تعز', directorate: 'مشرعه وحدنان' },
+    grade6: { year: '2022 / 2023', school: 'مدرسة سابقة', governorate: 'محافظة', directorate: 'مديرية' },
+    grade7: { year: '2023 / 2024', school: 'مدرسة سابقة', governorate: 'محافظة', directorate: 'مديرية' },
+    grade8: { year: '2024 / 2025', school: 'مدرسة سابقة', governorate: 'محافظة', directorate: 'مديرية' },
     grades: {
       month1: { homework: 20, attendance: 20, oral: 20, written: 40 }
     },
@@ -34,17 +47,17 @@ const defaultStudents: Student[] = [
       paidFees: 20000,
       transactions: [
         { id: 't1', date: '2025-01-01', amount: 50000, type: 'charge', note: 'رسوم دراسية' },
-        { id: 't2', date: '2025-02-15', amount: 20000, type: 'payment', note: 'قسط أول' }
+        { id: 't2', date: '2025-02-15', amount: 20000, type: 'payment', note: 'دفعة أولى' }
       ]
     }
   },
   {
     id: '2',
-    name: 'محمد نبيل عبدالقادر سعيد عبدالاله',
-    gender: 'ذكر',
-    birthDate: '2009/01/01',
-    birthPlace: 'تعز • مشرعه وحدنان',
-    guardian: 'نبيل عبدالقادر سعيد',
+    name: 'طالبة تجريبية 2',
+    gender: 'أنثى',
+    birthDate: '2010/05/15',
+    birthPlace: 'المدينة',
+    guardian: 'ولي الأمر 2',
     schoolYear: '2025 / 2026',
     grades: {
       month1: { homework: null, attendance: null, oral: null, written: null }
@@ -63,6 +76,8 @@ const defaultStudents: Student[] = [
 export const useStore = create<AppState>()(
   persist(
     (set) => ({
+      settings: defaultSettings,
+      updateSettings: (updates) => set((state) => ({ settings: { ...state.settings, ...updates } })),
       students: defaultStudents,
       editingStudentId: null,
       setEditingStudentId: (id) => set({ editingStudentId: id }),

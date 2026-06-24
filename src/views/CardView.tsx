@@ -1,4 +1,4 @@
-import { ArrowLeft, Settings, Printer, PieChart, PanelTop, Maximize2, ChevronLeft, ChevronRight, Check, Edit3 } from 'lucide-react';
+import { ArrowLeft, Settings, Printer, PieChart, PanelTop, Maximize2, ChevronLeft, ChevronRight, Check, Edit3, MessageCircle } from 'lucide-react';
 import { ViewState } from '../types';
 import { useState, useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
@@ -18,37 +18,40 @@ export default function CardView({ setView }: CardViewProps) {
   });
 
   return (
-    <div className="flex flex-col h-full bg-gradient-to-b from-[#5a3696] to-[#cdb4db] relative">
+    <div className="flex flex-col h-full bg-black relative text-gray-200">
       {/* Top Header */}
-      <div className="bg-[#482880] text-white flex items-center justify-between p-3 shadow-md z-10 print:hidden">
-        <button onClick={() => setView('progress_dashboard')} className="p-2 rounded-full hover:bg-white/10">
-          <ArrowLeft className="w-5 h-5" />
+      <div className="bg-gray-900/90 backdrop-blur-xl text-white flex items-center justify-between p-4 shadow-[0_4px_30px_rgba(147,51,234,0.15)] z-10 sticky top-0 border-b border-purple-500/20 print:hidden">
+        <button onClick={() => setView('progress_dashboard')} className="p-2 hover:bg-white/10 rounded-xl transition-colors group">
+          <ArrowLeft className="w-5 h-5 text-purple-400 group-hover:text-cyan-400" />
         </button>
-        <div className="flex items-center bg-white/10 rounded-full px-4 py-1">
-          <PieChart className="w-4 h-4 ml-2" />
-          <span className="font-bold text-sm">الصف : التاسع | 2025-2026</span>
+        <div className="flex items-center bg-black/50 border border-purple-500/30 rounded-xl px-4 py-1.5 shadow-inner">
+          <PieChart className="w-4 h-4 ml-2 text-cyan-400" />
+          <span className="font-bold text-sm text-white">الصف : التاسع | 2025-2026</span>
         </div>
         <div className="flex space-x-2 space-x-reverse">
-          <button onClick={() => setShowSettings(!showSettings)} className="p-2 rounded-full hover:bg-white/10">
-            <Settings className="w-5 h-5" />
+          <button onClick={() => setShowSettings(!showSettings)} className="p-2 hover:bg-white/10 rounded-xl transition-colors group">
+            <Settings className="w-5 h-5 text-purple-400 group-hover:text-cyan-400" />
           </button>
-          <button onClick={() => handlePrint()} className="p-2 rounded-full hover:bg-white/10">
-            <Printer className="w-5 h-5" />
+          <button className="p-2 hover:bg-white/10 rounded-xl transition-colors group" title="مشاركة عبر واتساب">
+            <MessageCircle className="w-5 h-5 text-green-400 group-hover:text-green-300" />
+          </button>
+          <button onClick={() => handlePrint()} className="p-2 hover:bg-white/10 rounded-xl transition-colors group">
+            <Printer className="w-5 h-5 text-cyan-400 group-hover:text-purple-400" />
           </button>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="bg-white shadow-sm overflow-x-auto hide-scrollbar z-10 print:hidden">
-        <div className="flex p-2 space-x-2 space-x-reverse min-w-max">
+      <div className="bg-gray-900/60 backdrop-blur-md border-b border-purple-500/20 overflow-x-auto hide-scrollbar z-10 print:hidden shadow-lg">
+        <div className="flex p-3 space-x-2 space-x-reverse min-w-max justify-center">
           {['رقم جلوس', 'رقم جلوس Lux', 'بطاقة تقدم عادية', 'بطاقة تقدم Lux'].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-4 py-2 rounded-full text-sm font-bold transition-colors whitespace-nowrap ${
+              className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all whitespace-nowrap ${
                 activeTab === tab 
-                  ? 'bg-[#e91e63] text-white shadow-md' 
-                  : 'bg-gray-100 text-gray-600 border border-gray-200 hover:bg-gray-200'
+                  ? 'bg-gradient-to-r from-purple-600 to-cyan-600 text-white shadow-[0_0_15px_rgba(147,51,234,0.3)] border border-purple-400/50' 
+                  : 'bg-black/50 text-gray-300 border border-purple-500/30 hover:bg-purple-900/40 hover:border-cyan-500/50'
               }`}
             >
               {tab}
@@ -58,21 +61,24 @@ export default function CardView({ setView }: CardViewProps) {
       </div>
 
       {/* Main Content Area (The Card) */}
-      <div className="flex-1 overflow-auto p-4 flex flex-col items-center print:p-0 print:bg-white print:block">
+      <div className="flex-1 overflow-auto p-4 md:p-8 flex flex-col items-center print:p-0 print:bg-white print:block">
         
         {/* Student Info Bar */}
-        <div className="w-full bg-[#593996]/80 backdrop-blur-sm text-white rounded-full px-4 py-2 flex items-center justify-between mb-4 shadow-lg text-xs font-bold border border-white/20 print:hidden">
+        <div className="w-full max-w-[800px] bg-gray-900/60 backdrop-blur-xl border border-purple-500/30 text-white rounded-2xl px-5 py-3 flex items-center justify-between mb-6 shadow-[0_0_20px_rgba(147,51,234,0.15)] text-sm font-bold print:hidden">
           <div className="flex items-center">
-            <span className="bg-white text-[#593996] px-2 py-0.5 rounded-full mr-2">142578</span>
-            <span>الطالب : نبيل عبدالقادر علي</span>
+            <span className="bg-gradient-to-r from-purple-600 to-cyan-600 text-white px-3 py-1 rounded-lg ml-3 shadow-md">142578</span>
+            <span className="text-gray-200">الطالب : <span className="text-white">نبيل عبدالقادر علي</span></span>
           </div>
-          <span className="bg-black/30 px-3 py-1 rounded-full">الصف : CLASS_NAME</span>
+          <span className="bg-black/50 border border-purple-500/30 text-cyan-300 px-4 py-1.5 rounded-lg">الصف : التاسع</span>
         </div>
 
         {/* The Document/Card */}
-        <div ref={componentRef} className="bg-white w-full max-w-[800px] rounded-lg shadow-2xl overflow-hidden border-4 border-amber-100/50 relative print:shadow-none print:border-none print:max-w-none print:w-full print:p-4">
+        <div ref={componentRef} className="bg-white text-black w-full max-w-[800px] rounded-xl shadow-[0_0_40px_rgba(147,51,234,0.15)] overflow-hidden border-2 border-purple-500/20 relative print:shadow-none print:border-none print:max-w-none print:w-full print:p-4 mb-24">
           {/* Watermark/Background Pattern simulation */}
           <div className="absolute inset-0 opacity-5 pointer-events-none bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-amber-900 via-transparent to-transparent"></div>
+          <div className="hidden print:flex absolute inset-0 items-center justify-center pointer-events-none z-0 opacity-[0.03]">
+             <h1 className="text-[150px] font-black -rotate-45 text-black">نظام يرموك</h1>
+          </div>
           
           <div className="p-6 relative z-10">
             {/* Document Header */}
@@ -162,40 +168,37 @@ export default function CardView({ setView }: CardViewProps) {
       </div>
 
       {/* Bottom Floating Controls */}
-      <div className="absolute bottom-16 left-0 right-0 flex justify-between px-4 pointer-events-none print:hidden">
-        <div className="bg-[#482880]/80 backdrop-blur-md text-white px-4 py-1.5 rounded-full text-xs font-bold pointer-events-auto flex items-center shadow-lg border border-white/20">
+      <div className="fixed bottom-24 left-0 right-0 flex justify-between px-4 md:px-8 pointer-events-none print:hidden z-30 max-w-7xl mx-auto w-full">
+        <div className="bg-gray-900/80 backdrop-blur-xl text-cyan-400 px-5 py-2.5 rounded-xl text-xs font-bold pointer-events-auto flex items-center shadow-[0_0_20px_rgba(147,51,234,0.2)] border border-purple-500/30">
           عرض قابل للتكبير والتحريك
         </div>
         <div className="flex space-x-2 space-x-reverse pointer-events-auto">
-          <button className="w-10 h-10 bg-[#482880]/80 backdrop-blur-md text-white rounded-full flex items-center justify-center shadow-lg border border-white/20 hover:bg-[#593996]">
+          <button className="w-12 h-12 bg-gray-900/80 backdrop-blur-xl text-purple-400 rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(147,51,234,0.2)] border border-purple-500/30 hover:text-cyan-400 hover:border-cyan-500/50 transition-colors">
             <PanelTop className="w-5 h-5" />
           </button>
-          <button className="w-10 h-10 bg-[#482880]/80 backdrop-blur-md text-white rounded-full flex items-center justify-center shadow-lg border border-white/20 hover:bg-[#593996]">
+          <button className="w-12 h-12 bg-gray-900/80 backdrop-blur-xl text-purple-400 rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(147,51,234,0.2)] border border-purple-500/30 hover:text-cyan-400 hover:border-cyan-500/50 transition-colors">
             <Maximize2 className="w-5 h-5" />
-          </button>
-          <button className="w-10 h-10 bg-[#482880]/80 backdrop-blur-md text-white rounded-full flex items-center justify-center shadow-lg border border-white/20 hover:bg-[#593996]">
-            <Settings className="w-5 h-5" />
           </button>
         </div>
       </div>
 
       {/* Bottom Navigation (Student Scroller) */}
-      <div className="bg-[#593996] text-white p-2 pb-safe flex flex-col z-20 print:hidden">
-        <div className="flex justify-between items-center text-xs font-bold px-2 mb-2">
-          <span>التنقل بين الطلاب</span>
-          <span className="bg-white/20 px-2 py-0.5 rounded-full">4</span>
+      <div className="bg-gray-900/90 backdrop-blur-xl border-t border-purple-500/20 text-white p-3 pb-safe flex flex-col z-20 print:hidden fixed bottom-0 w-full shadow-[0_-4px_30px_rgba(147,51,234,0.15)]">
+        <div className="flex justify-between items-center text-xs font-bold px-4 mb-3">
+          <span className="text-cyan-400">التنقل بين الطلاب</span>
+          <span className="bg-black/50 border border-purple-500/30 px-3 py-1 rounded-full text-purple-300">4</span>
         </div>
-        <div className="flex space-x-2 space-x-reverse overflow-x-auto hide-scrollbar pb-1">
-          <button className="bg-white text-[#593996] px-4 py-2 rounded-xl text-sm font-bold shadow-md flex items-center whitespace-nowrap min-w-max">
-            <span className="bg-[#593996] text-white w-5 h-5 rounded-full flex items-center justify-center text-xs mr-2">1</span>
+        <div className="flex space-x-3 space-x-reverse overflow-x-auto hide-scrollbar pb-2 px-2">
+          <button className="bg-gradient-to-r from-purple-600 to-cyan-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-[0_0_15px_rgba(147,51,234,0.3)] flex items-center whitespace-nowrap min-w-max border border-purple-400/50">
+            <span className="bg-white text-purple-900 w-6 h-6 rounded-full flex items-center justify-center text-xs ml-3 font-black shadow-inner">1</span>
             نبيل عبدالقادر علي
           </button>
-          <button className="bg-white/10 text-white px-4 py-2 rounded-xl text-sm font-bold border border-white/20 flex items-center whitespace-nowrap min-w-max">
-            <span className="bg-white/20 w-5 h-5 rounded-full flex items-center justify-center text-xs mr-2">2</span>
+          <button className="bg-black/50 text-gray-300 px-5 py-2.5 rounded-xl text-sm font-bold border border-purple-500/30 flex items-center whitespace-nowrap min-w-max hover:bg-purple-900/40 hover:border-cyan-500/50 transition-colors">
+            <span className="bg-gray-800 text-gray-400 w-6 h-6 rounded-full flex items-center justify-center text-xs ml-3 border border-purple-500/20">2</span>
             محمد أحمد علي عبدالله...
           </button>
-          <button className="bg-white/10 text-white px-4 py-2 rounded-xl text-sm font-bold border border-white/20 flex items-center whitespace-nowrap min-w-max">
-            <span className="bg-white/20 w-5 h-5 rounded-full flex items-center justify-center text-xs mr-2">3</span>
+          <button className="bg-black/50 text-gray-300 px-5 py-2.5 rounded-xl text-sm font-bold border border-purple-500/30 flex items-center whitespace-nowrap min-w-max hover:bg-purple-900/40 hover:border-cyan-500/50 transition-colors">
+            <span className="bg-gray-800 text-gray-400 w-6 h-6 rounded-full flex items-center justify-center text-xs ml-3 border border-purple-500/20">3</span>
             أسماء محمد حسين
           </button>
         </div>

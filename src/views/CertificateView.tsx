@@ -1,4 +1,4 @@
-import { ArrowLeft, Printer, Share2, ZoomIn, ZoomOut, ChevronDown } from 'lucide-react';
+import { ArrowLeft, Printer, Share2, ZoomIn, ZoomOut, ChevronDown, MessageCircle } from 'lucide-react';
 import { ViewState } from '../types';
 import { useRef, useState } from 'react';
 import { useReactToPrint } from 'react-to-print';
@@ -9,7 +9,7 @@ interface CertificateViewProps {
 }
 
 export default function CertificateView({ setView }: CertificateViewProps) {
-  const { students } = useStore();
+  const { students, settings } = useStore();
   const [selectedStudentId, setSelectedStudentId] = useState<string>(students[0]?.id || '');
   const componentRef = useRef<HTMLDivElement>(null);
 
@@ -19,6 +19,15 @@ export default function CertificateView({ setView }: CertificateViewProps) {
     contentRef: componentRef,
     documentTitle: 'شهادة_تقييم_تلميذ',
   });
+
+  const handleWhatsAppShare = () => {
+    if (!selectedStudent) return;
+    const text = `السلام عليكم ورحمة الله وبركاته،\nولي أمر الطالب/ة: ${selectedStudent.name}\nنرفق لكم شهادة الطالب/ة للعام الدراسي ${settings.year}\nتقبلوا تحيات إدارة ${settings.schoolName}.`;
+    const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank');
+  };
+
+  const [zoom, setZoom] = useState(1);
 
   const getSubjectGrade = (month: 'month1' | 'month2' | 'month3') => {
      // Mock logic since we only have general monthly totals in our mock data
@@ -46,58 +55,71 @@ export default function CertificateView({ setView }: CertificateViewProps) {
   ];
 
   return (
-    <div className="flex flex-col h-full bg-gray-100">
+    <div className="flex flex-col h-full bg-black relative text-gray-200">
       {/* Top Bar */}
-      <div className="bg-[#482880] text-white flex items-center justify-between p-3 shadow-md z-10">
-        <button onClick={() => setView('home')} className="p-2 rounded-full hover:bg-white/10">
-          <ArrowLeft className="w-5 h-5" />
+      <div className="bg-gray-900/90 backdrop-blur-xl text-white flex items-center justify-between p-4 shadow-[0_4px_30px_rgba(147,51,234,0.15)] z-10 sticky top-0 border-b border-purple-500/20 print:hidden">
+        <button onClick={() => setView('home')} className="p-2 hover:bg-white/10 rounded-xl transition-colors group">
+          <ArrowLeft className="w-5 h-5 text-purple-400 group-hover:text-cyan-400" />
         </button>
-        <div className="flex items-center bg-white/10 rounded-full px-4 py-1">
-          <span className="font-bold text-sm">الشهادات النهائية</span>
+        <div className="text-center flex-1">
+          <h1 className="font-bold text-lg text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400">الشهادات النهائية</h1>
         </div>
-        <div className="flex space-x-2 space-x-reverse">
-          <button onClick={() => handlePrint()} className="p-2 rounded-full hover:bg-white/10 bg-[#e91e63] shadow-md">
-            <Printer className="w-5 h-5" />
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 bg-black/50 border border-purple-500/30 rounded-xl p-1" dir="ltr">
+            <button onClick={() => setZoom(z => Math.max(0.5, z - 0.1))} className="p-1 hover:bg-purple-900/40 rounded-lg text-purple-400 hover:text-cyan-400 font-bold">-</button>
+            <span className="text-xs font-mono w-10 text-center text-cyan-300">{Math.round(zoom * 100)}%</span>
+            <button onClick={() => setZoom(z => Math.min(2, z + 0.1))} className="p-1 hover:bg-purple-900/40 rounded-lg text-purple-400 hover:text-cyan-400 font-bold">+</button>
+          </div>
+          <button onClick={() => handlePrint()} className="p-2 hover:bg-white/10 rounded-xl transition-colors group">
+            <Printer className="w-5 h-5 text-cyan-400 group-hover:text-purple-400" />
           </button>
         </div>
       </div>
 
       {/* Toolbar */}
-      <div className="bg-white shadow-sm flex items-center justify-between px-4 py-2 text-sm text-gray-600">
-        <div className="flex items-center space-x-4 space-x-reverse">
-           <div className="flex items-center">
-             <span className="ml-2 font-bold text-gray-700">الطالب:</span>
+      <div className="bg-gray-900/60 backdrop-blur-md border-b border-purple-500/20 flex flex-wrap items-center justify-between px-4 py-3 text-sm text-gray-300 print:hidden shadow-lg" dir="rtl">
+        <div className="flex items-center gap-4">
+           <div className="flex items-center bg-black/50 border border-purple-500/30 rounded-xl px-4 py-2">
+             <span className="ml-2 font-bold text-cyan-400">الطالب:</span>
              <select 
                value={selectedStudentId}
                onChange={(e) => setSelectedStudentId(e.target.value)}
-               className="border border-gray-300 rounded px-2 py-1 text-sm bg-gray-50 focus:outline-none"
+               className="bg-transparent text-white font-bold focus:outline-none appearance-none pr-2 pl-6"
              >
                {students.map(s => (
-                 <option key={s.id} value={s.id}>{s.name}</option>
+                 <option key={s.id} value={s.id} className="bg-gray-900 text-white">{s.name}</option>
                ))}
              </select>
            </div>
         </div>
-        <button className="flex items-center text-[#482880] font-bold"><Share2 className="w-4 h-4 mr-1"/> مشاركة (PDF)</button>
+        <div className="flex items-center gap-2">
+          <button onClick={handleWhatsAppShare} className="flex items-center text-green-400 font-bold hover:text-green-300 transition-colors bg-green-900/30 px-3 py-2 rounded-xl border border-green-500/30">
+            <MessageCircle className="w-5 h-5 ml-2"/> إرسال واتساب
+          </button>
+          <button className="flex items-center text-purple-400 font-bold hover:text-cyan-400 transition-colors"><Share2 className="w-4 h-4 ml-2"/> مشاركة (PDF)</button>
+        </div>
       </div>
 
       {/* Main Print Container */}
-      <div className="flex-1 overflow-auto p-4 flex justify-center pb-20">
+      <div className="flex-1 overflow-auto p-4 md:p-8 flex justify-center items-start print:p-0 print:overflow-visible">
         <div 
           ref={componentRef} 
-          className="bg-white w-[210mm] min-h-[297mm] shadow-lg border border-gray-200 relative p-8 print:p-0 print:shadow-none print:border-none print:w-full"
-          style={{
-            margin: '0 auto',
-          }}
+          style={{ transform: `scale(${zoom})`, transformOrigin: 'top center' }}
+          className="bg-white text-black w-[210mm] min-h-[297mm] shadow-[0_0_40px_rgba(147,51,234,0.15)] relative p-8 print:p-0 print:shadow-none print:border-none print:w-full print:transform-none transition-transform duration-200"
         >
+          {/* Watermark */}
+          <div className="hidden print:flex absolute inset-0 items-center justify-center pointer-events-none z-0 opacity-[0.03]">
+             <h1 className="text-[150px] font-black -rotate-45 text-black">نظام يرموك</h1>
+          </div>
+          
           {/* Certificate Content */}
-          <div className="flex justify-between items-start mb-4 text-sm font-bold text-gray-800 border-b-2 border-[#1a3a6c] pb-4">
+          <div className="flex justify-between items-start mb-4 text-sm font-bold text-gray-800 border-b-2 border-[#1a3a6c] pb-4 relative z-10">
             <div className="text-right leading-tight w-1/3">
-              <p contentEditable suppressContentEditableWarning>الجمهورية اليمنية</p>
-              <p contentEditable suppressContentEditableWarning>وزارة التربية والتعليم</p>
-              <p contentEditable suppressContentEditableWarning>مكتب التربية والتعليم بمحافظة <span className="text-red-600 font-normal">تعز</span></p>
-              <p contentEditable suppressContentEditableWarning>إدارة التربية والتعليم بمديرية <span className="text-red-600 font-normal">القاهرة</span></p>
-              <p contentEditable suppressContentEditableWarning>مدرسة <span className="text-red-600 font-normal">النهضة الحديثة</span></p>
+              <p>{settings.country}</p>
+              <p>{settings.ministry}</p>
+              <p>مكتب التربية والتعليم بمحافظة <span className="text-red-600 font-normal">{settings.governorate}</span></p>
+              <p>إدارة التربية والتعليم بمديرية <span className="text-red-600 font-normal">{settings.directorate}</span></p>
+              <p>مدرسة <span className="text-red-600 font-normal">{settings.schoolName}</span></p>
             </div>
             <div className="w-1/3 flex justify-center">
               <div className="w-20 h-20 bg-yellow-100 rounded-full border-2 border-red-800 flex items-center justify-center text-red-800 text-xs text-center leading-tight shadow-sm">
@@ -107,9 +129,9 @@ export default function CertificateView({ setView }: CertificateViewProps) {
             <div className="text-left leading-tight w-1/3 text-xs" dir="ltr">
               <p contentEditable suppressContentEditableWarning>Republic of Yemen</p>
               <p contentEditable suppressContentEditableWarning>Ministry of Education</p>
-              <p contentEditable suppressContentEditableWarning>EDUCATION OFFICE: <span className="text-red-600 font-normal border-b border-dotted border-gray-400">Taiz</span></p>
-              <p contentEditable suppressContentEditableWarning>GOVERNORATE: <span className="text-red-600 font-normal border-b border-dotted border-gray-400">Al-Qahira</span></p>
-              <p contentEditable suppressContentEditableWarning>SCHOOL: <span className="text-red-600 font-normal border-b border-dotted border-gray-400">Al-Nahda</span></p>
+              <p>EDUCATION OFFICE: <span className="text-red-600 font-normal border-b border-dotted border-gray-400" contentEditable suppressContentEditableWarning>Taiz</span></p>
+              <p>GOVERNORATE: <span className="text-red-600 font-normal border-b border-dotted border-gray-400" contentEditable suppressContentEditableWarning>Al-Qahira</span></p>
+              <p>SCHOOL: <span className="text-red-600 font-normal border-b border-dotted border-gray-400" contentEditable suppressContentEditableWarning>Al-Nahda</span></p>
             </div>
           </div>
 
@@ -117,8 +139,8 @@ export default function CertificateView({ setView }: CertificateViewProps) {
             <h1 className="text-xl font-black text-[#1a3a6c] mb-1" contentEditable suppressContentEditableWarning>شهادة تقييم التلميذ في أعمال السنة والاختبارات المدرسية لمرحلة التعليم الأساسي</h1>
             <h2 className="text-sm font-bold text-gray-700 uppercase tracking-tight mb-1" dir="ltr" contentEditable suppressContentEditableWarning>Student's Academic Conduct and Final Exam Evaluation for the Basic Education Level</h2>
             <h3 className="text-sm font-bold text-[#1a3a6c]" contentEditable suppressContentEditableWarning>(للصفوف من الصف الرابع إلى الصف الثامن)</h3>
-            <div className="mt-2 inline-block px-6 py-1 bg-gray-100 rounded-full border border-gray-300 font-bold text-[#e91e63]" contentEditable suppressContentEditableWarning>
-              للعام الدراسي 2025 / 2026 ACADEMIC YEAR
+            <div className="mt-2 inline-block px-6 py-1 bg-gray-100 rounded-full border border-gray-300 font-bold text-[#e91e63]">
+              للعام الدراسي {settings.year} ACADEMIC YEAR
             </div>
           </div>
 
@@ -234,11 +256,11 @@ export default function CertificateView({ setView }: CertificateViewProps) {
             </div>
             <div className="flex flex-col items-center">
               <span className="mb-8" contentEditable suppressContentEditableWarning>النسبة المئوية: <span className="text-red-600 border-b border-dotted border-gray-400">94.71%</span> :Percentage</span>
-              <span className="border-t border-gray-400 pt-2 w-48" contentEditable suppressContentEditableWarning>مدير المدرسة<br/>School Principal</span>
+              <span className="border-t border-gray-400 pt-2 w-48" suppressContentEditableWarning>{settings.principalName}<br/>School Principal</span>
             </div>
             <div className="flex flex-col items-center">
               <span className="mb-8" contentEditable suppressContentEditableWarning>التقدير: <span className="text-red-600 border-b border-dotted border-gray-400">ممتاز</span> :Grade</span>
-              <span className="border-t border-gray-400 pt-2 w-48" contentEditable suppressContentEditableWarning>ختم المدرسة<br/>School Seal</span>
+              <span className="border-t border-gray-400 pt-2 w-48" suppressContentEditableWarning>{settings.schoolSealText}<br/>School Seal</span>
             </div>
           </div>
         </div>

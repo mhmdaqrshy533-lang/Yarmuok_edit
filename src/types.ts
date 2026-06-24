@@ -1,4 +1,15 @@
-export type ViewState = 'home' | 'monthly_results' | 'progress_dashboard' | 'card_view' | 'student_list' | 'certificate' | 'student_form' | 'accounting' | 'exam_editor' | 'doc_editor';
+export type ViewState = 'home' | 'monthly_results' | 'progress_dashboard' | 'card_view' | 'student_list' | 'certificate' | 'student_form' | 'accounting' | 'exam_editor' | 'doc_editor' | 'settings';
+
+export interface AppSettings {
+  country: string;
+  ministry: string;
+  governorate: string;
+  directorate: string;
+  schoolName: string;
+  principalName: string;
+  schoolSealText: string;
+  year: string;
+}
 
 export interface Student {
   id: string;
