@@ -1,7 +1,15 @@
-import { ArrowRight, ChevronDown } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { ArrowRight, ChevronDown, Sparkles } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
 import { ViewState, Student } from '../types';
 import { useStore } from '../store';
+
+const COMMON_NAMES = [
+  { name: 'أحمد محمد علي', gender: 'ذكر', birthPlace: 'صنعاء' },
+  { name: 'فاطمة عبدالله صالح', gender: 'أنثى', birthPlace: 'تعز' },
+  { name: 'عمر خالد حسن', gender: 'ذكر', birthPlace: 'عدن' },
+  { name: 'سارة عبدالرحمن', gender: 'أنثى', birthPlace: 'إب' },
+  { name: 'علي يحيى منصور', gender: 'ذكر', birthPlace: 'صنعاء' }
+];
 
 interface StudentFormProps {
   setView: (view: ViewState) => void;
@@ -9,6 +17,7 @@ interface StudentFormProps {
 
 export default function StudentForm({ setView }: StudentFormProps) {
   const { addStudent, updateStudent, students, editingStudentId } = useStore();
+  const [showPredictions, setShowPredictions] = useState(false);
   
   const [formData, setFormData] = useState<Partial<Student>>({
     name: '',
@@ -69,15 +78,50 @@ export default function StudentForm({ setView }: StudentFormProps) {
         
         {/* Basic Info Section */}
         <div className="bg-gray-900/60 backdrop-blur-xl p-6 rounded-3xl shadow-[0_0_30px_rgba(147,51,234,0.1)] border border-purple-500/20 space-y-4">
-          <h2 className="font-bold text-cyan-400 text-base border-b border-purple-500/30 pb-3">البيانات الأساسية</h2>
-          <div>
-            <label className="text-sm font-bold text-gray-400 block mb-2">اسم الطالب رباعياً</label>
+          <h2 className="font-bold text-cyan-400 text-base border-b border-purple-500/30 pb-3 flex items-center gap-2">
+            البيانات الأساسية
+          </h2>
+          <div className="relative">
+            <label className="text-sm font-bold text-gray-400 block mb-2 flex items-center gap-2">
+              اسم الطالب رباعياً
+              <span className="text-xs bg-gradient-to-r from-purple-500 to-cyan-500 text-transparent bg-clip-text font-black flex items-center gap-1">
+                <Sparkles className="w-3 h-3 text-cyan-400" /> إدخال تنبؤي ذكي
+              </span>
+            </label>
             <input 
               type="text" 
               value={formData.name}
-              onChange={e => setFormData({...formData, name: e.target.value})}
+              onFocus={() => setShowPredictions(true)}
+              onBlur={() => setTimeout(() => setShowPredictions(false), 200)}
+              onChange={e => {
+                setFormData({...formData, name: e.target.value});
+                setShowPredictions(true);
+              }}
               className="w-full border border-purple-500/30 rounded-2xl py-3 px-4 text-base bg-black/50 text-white focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all" 
+              placeholder="اكتب الحرف الأول..."
             />
+            {showPredictions && formData.name && (
+              <div className="absolute top-full left-0 right-0 mt-1 bg-gray-900 border border-purple-500/30 rounded-xl overflow-hidden shadow-2xl z-50">
+                {COMMON_NAMES.filter(n => n.name.startsWith(formData.name || '')).map((prediction, idx) => (
+                  <div 
+                    key={idx}
+                    className="p-3 hover:bg-purple-900/40 cursor-pointer text-gray-200 border-b border-gray-800 last:border-0 flex justify-between items-center transition-colors"
+                    onClick={() => {
+                      setFormData({
+                        ...formData, 
+                        name: prediction.name, 
+                        gender: prediction.gender as 'ذكر' | 'أنثى',
+                        birthPlace: prediction.birthPlace
+                      });
+                      setShowPredictions(false);
+                    }}
+                  >
+                    <span className="font-bold text-cyan-400">{prediction.name}</span>
+                    <span className="text-xs text-gray-500">إكمال تلقائي للبيانات ⚡</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>

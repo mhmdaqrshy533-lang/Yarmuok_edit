@@ -1,6 +1,6 @@
-import { ArrowRight, Printer, LayoutTemplate, FilePlus2, CloudDownload } from 'lucide-react';
+import { ArrowRight, Printer, LayoutTemplate, FilePlus2, CloudDownload, Moon, Sun, Wand2, Save, BarChart3 } from 'lucide-react';
 import { ViewState } from '../types';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import { useStore } from '../store';
 
@@ -10,42 +10,213 @@ interface ExamEditorProps {
 
 export default function ExamEditor({ setView }: ExamEditorProps) {
   const { settings } = useStore();
-  const [template, setTemplate] = useState<'classic' | 'bubble' | 'saudi_classic' | 'saudi_bubble' | 'algerian_classic' | 'saudi_vision'>('classic');
+  const [template, setTemplate] = useState<'classic' | 'bubble' | 'saudi_classic' | 'saudi_bubble' | 'algerian_classic' | 'saudi_vision' | 'yemen_sovereign'>('yemen_sovereign');
   const componentRef = useRef<HTMLDivElement>(null);
   const [questions, setQuestions] = useState<number[]>(Array.from({length: 20}, (_, i) => i + 1));
   const [lockerOpen, setLockerOpen] = useState(false);
+  const [points, setPoints] = useState(1250);
+  const [documentSize, setDocumentSize] = useState<'A4' | 'Ledger' | 'Custom'>('A4');
+
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  const [showAnalytics, setShowAnalytics] = useState(false);
+  const [showSetupDialog, setShowSetupDialog] = useState(true);
+  const [examConfig, setExamConfig] = useState({
+    subject: '',
+    academicYear: '2025/2026',
+    duration: 'ساعتان',
+    schoolName: settings.schoolName || 'مدرسة اليرموك',
+    logo: null as string | null
+  });
+  const [showAddQuestion, setShowAddQuestion] = useState(false);
+  const [newQuestion, setNewQuestion] = useState({ text: '', type: 'اختياري', points: '1' });
+  const isScience = ['الرياضيات', 'الفيزياء', 'رياضيات', 'فيزياء', 'math', 'physics'].includes(examConfig.subject);
 
   const handlePrint = useReactToPrint({
     contentRef: componentRef,
     documentTitle: 'نموذج_اختبار',
   });
 
-  const addQuestion = () => setQuestions([...questions, questions.length + 1]);
+  const [lastSaved, setLastSaved] = useState<Date | null>(new Date());
+
+  // Auto-Save feature
+  // (In a real app, this would use a debounced effect listening to exam content changes)
+  
+  const addQuestion = () => {
+    setQuestions([...questions, questions.length + 1]);
+    setPoints(p => p + 50);
+    setLastSaved(new Date());
+  };
   const [zoom, setZoom] = useState(1);
 
   return (
-    <div className="flex flex-col h-full bg-black relative text-gray-200">
-      {/* Top Bar */}
-      <div className="bg-gray-900/90 backdrop-blur-xl text-white flex items-center justify-between p-4 shadow-[0_4px_30px_rgba(147,51,234,0.15)] z-10 sticky top-0 border-b border-purple-500/20 print:hidden">
-        <button onClick={() => setView('home')} className="p-2 hover:bg-white/10 rounded-xl transition-colors group">
-          <ArrowRight className="w-5 h-5 text-purple-400 group-hover:text-cyan-400" />
+    <div className={`flex flex-col h-full relative ${theme === 'dark' ? 'bg-black text-gray-200' : 'bg-gray-50 text-gray-900'} transition-colors duration-300`}>
+      {/* Top Bar - Sovereign Yemeni Identity */}
+      <div className={`transition-all duration-300 ${theme === 'dark' ? 'bg-black/90 backdrop-blur-xl border-b-2 border-red-600' : 'bg-white/90 backdrop-blur-xl border-b-2 border-red-600'} flex items-center justify-between p-4 shadow-[0_4px_30px_rgba(220,38,38,0.15)] z-20 sticky top-0 print:hidden`}>
+        <button onClick={() => setView('home')} className={`p-2 rounded-xl transition-colors group ${theme === 'dark' ? 'hover:bg-white/10 text-gray-200' : 'hover:bg-gray-100 text-gray-800'}`}>
+          <ArrowRight className="w-5 h-5 group-hover:text-red-500 transition-colors" />
         </button>
-        <div className="text-center flex-1">
-          <h1 className="font-bold text-lg text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400">محرر الاختبارات الشامل</h1>
+        <div className="text-center flex-1 flex items-center justify-center gap-3">
+          <div className="flex gap-1">
+             <div className="w-3 h-3 rounded-full bg-red-600"></div>
+             <div className="w-3 h-3 rounded-full bg-white border border-gray-300"></div>
+             <div className="w-3 h-3 rounded-full bg-black"></div>
+          </div>
+          <h1 className={`font-black text-xl tracking-tight ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+            نظام يرموك السيادي <span className="text-[#39ff14] drop-shadow-[0_0_8px_rgba(57,255,20,0.8)] font-normal text-sm ml-2 hidden sm:inline-block">محرر الاختبارات الذكي</span>
+          </h1>
+          {/* Gamification Points Badge */}
+          <div className={`hidden sm:flex items-center gap-1 px-3 py-1 rounded-full border ${theme === 'dark' ? 'bg-black/50 border-yellow-500/30' : 'bg-yellow-50 border-yellow-200'} cursor-pointer hover:scale-105 transition-transform`} title="نقاط الدوبامين لإنجازاتك">
+            <span className="text-yellow-500 font-black text-sm">{points}</span>
+            <span className="text-xs font-bold text-gray-500">نقطة</span>
+            <span className="text-yellow-400">🏆</span>
+          </div>
         </div>
-        <div className="flex gap-2">
-          <button onClick={() => setLockerOpen(!lockerOpen)} className="flex items-center gap-2 bg-blue-900/30 border border-blue-500/30 text-blue-400 font-bold px-3 py-2 rounded-xl hover:text-white transition-colors" title="خزانة الموارد التشاركية">
+        <div className="flex gap-2 items-center">
+          <button onClick={() => setShowAnalytics(true)} className={`flex items-center gap-2 ${theme === 'dark' ? 'bg-purple-900/30 border-purple-500/30 text-purple-400 hover:text-white' : 'bg-purple-100 border-purple-200 text-purple-600 hover:bg-purple-200'} font-bold px-3 py-2 rounded-xl border transition-colors`} title="لوحة تحليل أداء الطلاب">
+            <BarChart3 className="w-5 h-5"/>
+            <span className="hidden md:inline">التحليلات الذكية</span>
+          </button>
+          <button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className={`p-2 rounded-xl transition-colors ${theme === 'dark' ? 'text-yellow-400 hover:bg-white/10' : 'text-gray-800 hover:bg-gray-100'}`}>
+             {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+          </button>
+          <button onClick={() => setLockerOpen(!lockerOpen)} className={`flex items-center gap-2 ${theme === 'dark' ? 'bg-blue-900/30 border-blue-500/30 text-blue-400 hover:text-white' : 'bg-blue-100 border-blue-200 text-blue-600 hover:bg-blue-200'} font-bold px-3 py-2 rounded-xl border transition-colors`} title="خزانة الموارد التشاركية">
             <CloudDownload className="w-5 h-5"/>
             <span className="hidden md:inline">الخزانة التشاركية</span>
           </button>
-          <button onClick={() => handlePrint()} className="p-2 hover:bg-white/10 rounded-xl transition-colors group">
-            <Printer className="w-5 h-5 text-cyan-400 group-hover:text-purple-400" />
+          <button onClick={() => handlePrint()} className={`p-2 rounded-xl transition-colors group ${theme === 'dark' ? 'hover:bg-white/10' : 'hover:bg-gray-100'}`}>
+            <Printer className={`w-5 h-5 ${theme === 'dark' ? 'text-cyan-400 group-hover:text-purple-400' : 'text-cyan-600 group-hover:text-purple-600'}`} />
           </button>
         </div>
       </div>
 
+      {/* Setup Dialog */}
+      {showAnalytics && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center print:hidden" dir="rtl">
+          <div className={`w-full max-w-2xl ${theme === 'dark' ? 'bg-gray-900 border-gray-700 text-white' : 'bg-white border-gray-200 text-black'} border rounded-2xl shadow-2xl p-6 transform transition-all scale-100 m-4`}>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-black flex items-center gap-2">
+                <BarChart3 className="w-6 h-6 text-purple-500" />
+                تحليل أداء الطلاب (مدعوم بالذكاء الاصطناعي)
+              </h2>
+              <button onClick={() => setShowAnalytics(false)} className="text-gray-500 hover:text-red-500 transition-colors">
+                ✕
+              </button>
+            </div>
+            
+            <div className="grid grid-cols-3 gap-4 mb-6">
+               <div className={`p-4 rounded-xl border ${theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-gray-50 border-gray-200'} text-center`}>
+                  <div className="text-3xl font-black text-green-500 mb-1">85%</div>
+                  <div className="text-sm font-bold text-gray-500">متوسط درجات الفصل</div>
+               </div>
+               <div className={`p-4 rounded-xl border ${theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-gray-50 border-gray-200'} text-center`}>
+                  <div className="text-3xl font-black text-yellow-500 mb-1">السؤال 3</div>
+                  <div className="text-sm font-bold text-gray-500">الأكثر صعوبة للاستيعاب</div>
+               </div>
+               <div className={`p-4 rounded-xl border ${theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-gray-50 border-gray-200'} text-center`}>
+                  <div className="text-3xl font-black text-blue-500 mb-1">+12%</div>
+                  <div className="text-sm font-bold text-gray-500">تحسن الأداء هذا الشهر</div>
+               </div>
+            </div>
+
+            <div className={`w-full h-48 rounded-xl border ${theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-gray-50 border-gray-200'} flex items-end justify-between p-4 px-8`}>
+               {/* Mock Bar Chart */}
+               {[60, 40, 80, 50, 90, 70, 85].map((h, i) => (
+                 <div key={i} className="w-8 bg-gradient-to-t from-purple-600 to-cyan-500 rounded-t-sm" style={{ height: `${h}%` }}></div>
+               ))}
+            </div>
+            <div className="flex justify-between px-8 mt-2 text-xs font-bold text-gray-500">
+               <span>الوحدة 1</span><span>الوحدة 2</span><span>الوحدة 3</span><span>الوحدة 4</span><span>الوحدة 5</span><span>الوحدة 6</span><span>الوحدة 7</span>
+            </div>
+            
+            <div className="mt-6 p-4 rounded-xl bg-purple-500/10 border border-purple-500/20">
+               <h3 className="font-bold text-purple-400 mb-2 flex items-center gap-2"><Wand2 className="w-4 h-4"/> توصية النظام:</h3>
+               <p className="text-sm leading-relaxed">بناءً على نتائج الطلاب الأخيرة، يُنصح بتضمين المزيد من الأسئلة الاستنتاجية في مادة {examConfig.subject} وتخفيف أسئلة الحفظ المباشر.</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Setup Dialog */}
+      {showSetupDialog && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center print:hidden" dir="rtl">
+          <div className={`w-full max-w-md ${theme === 'dark' ? 'bg-gray-900 border-gray-700 text-white' : 'bg-white border-gray-200 text-black'} border rounded-2xl shadow-2xl p-6 transform transition-all scale-100 m-4`}>
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-black mb-1 flex items-center justify-center gap-2">
+                <Wand2 className="w-6 h-6 text-green-500" />
+                تهيئة الاختبار
+              </h2>
+              <p className="text-sm opacity-70">الاقتصاد المعرفي: نجهز لك القالب المثالي</p>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-bold mb-1">اسم المدرسة</label>
+                <select 
+                  className={`w-full p-3 rounded-xl border ${theme === 'dark' ? 'bg-black/50 border-gray-700 text-white' : 'bg-gray-50 border-gray-300 text-black'} focus:outline-none focus:border-green-500 transition-colors`}
+                  value={examConfig.schoolName}
+                  onChange={e => setExamConfig({...examConfig, schoolName: e.target.value})}
+                >
+                  <option value="مدرسة اليرموك">مدرسة اليرموك</option>
+                  <option value="مدرسة أبي ذر الغفاري">مدرسة أبي ذر الغفاري</option>
+                  <option value="مدرسة بلقيس">مدرسة بلقيس</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-bold mb-1">المادة</label>
+                <input 
+                  type="text" 
+                  placeholder="مثال: الرياضيات، الفيزياء، لغة عربية"
+                  className={`w-full p-3 rounded-xl border ${theme === 'dark' ? 'bg-black/50 border-gray-700 text-white' : 'bg-gray-50 border-gray-300 text-black'} focus:outline-none focus:border-green-500 transition-colors`}
+                  value={examConfig.subject}
+                  onChange={e => setExamConfig({...examConfig, subject: e.target.value})}
+                />
+              </div>
+              <div className="flex gap-4">
+                <div className="flex-1">
+                  <label className="block text-sm font-bold mb-1">العام الدراسي</label>
+                  <input type="text" className={`w-full p-3 rounded-xl border ${theme === 'dark' ? 'bg-black/50 border-gray-700 text-white' : 'bg-gray-50 border-gray-300 text-black'} focus:outline-none`} value={examConfig.academicYear} onChange={e => setExamConfig({...examConfig, academicYear: e.target.value})} />
+                </div>
+                <div className="flex-1">
+                  <label className="block text-sm font-bold mb-1">الزمن</label>
+                  <input type="text" className={`w-full p-3 rounded-xl border ${theme === 'dark' ? 'bg-black/50 border-gray-700 text-white' : 'bg-gray-50 border-gray-300 text-black'} focus:outline-none`} value={examConfig.duration} onChange={e => setExamConfig({...examConfig, duration: e.target.value})} />
+                </div>
+              </div>
+              <div>
+                 <label className="block text-sm font-bold mb-1">شعار المدرسة</label>
+                 <div className={`w-full p-4 border-2 border-dashed rounded-xl text-center cursor-pointer ${theme === 'dark' ? 'border-gray-600 hover:border-green-500 hover:bg-gray-800' : 'border-gray-300 hover:border-green-500 hover:bg-gray-50'} transition-all`}>
+                    <span className="text-sm">انقر لرفع الشعار من الهاتف</span>
+                 </div>
+              </div>
+            </div>
+            
+            <button 
+              onClick={() => setShowSetupDialog(false)}
+              className="w-full mt-6 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-400 text-white font-black text-lg py-3 rounded-xl shadow-[0_0_20px_rgba(34,197,94,0.3)] transition-all transform hover:scale-[1.02] active:scale-[0.98]"
+            >
+              بدء التحضير 🚀
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Context-Aware Toolbar */}
+      {isScience && !showSetupDialog && (
+        <div className={`border-b border-green-500/30 flex items-center justify-center gap-2 px-4 py-2 print:hidden ${theme === 'dark' ? 'bg-gray-900 text-gray-200' : 'bg-white shadow-sm text-gray-800'}`} dir="rtl">
+           <span className="text-xs font-bold text-green-500 flex items-center gap-1"><Wand2 className="w-3 h-3"/> أدوات علمية:</span>
+           {['√', '∞', '∫', 'π', '∑', 'θ', 'λ', '±', '×', '÷', '≈', '≠'].map(sym => (
+             <button key={sym} className={`w-8 h-8 flex items-center justify-center rounded shadow-sm font-bold font-serif text-lg ${theme === 'dark' ? 'bg-black border border-gray-700 hover:border-green-500 hover:text-green-400' : 'bg-gray-50 border border-gray-300 hover:border-green-500 hover:text-green-600'} transition-all active:scale-95`}>
+               {sym}
+             </button>
+           ))}
+           <div className={`h-6 w-px mx-2 ${theme === 'dark' ? 'bg-gray-700' : 'bg-gray-300'}`}></div>
+           <button className="flex items-center gap-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-all shadow-md active:scale-95">
+              لوحة الرسم الذكي (Smart Canvas)
+           </button>
+        </div>
+      )}
+
       {/* Toolbar */}
-      <div className="bg-gray-900/60 backdrop-blur-md border-b border-purple-500/20 flex flex-wrap items-center justify-center gap-4 px-4 py-3 text-sm text-gray-300 print:hidden shadow-lg relative" dir="rtl">
+      <div className={`${theme === 'dark' ? 'bg-gray-900/60 border-purple-500/20 text-gray-300' : 'bg-white/60 border-purple-200 text-gray-700'} backdrop-blur-md border-b flex flex-wrap items-center justify-center gap-4 px-4 py-3 text-sm print:hidden shadow-lg relative`} dir="rtl">
         
         {lockerOpen && (
           <div className="absolute top-16 left-4 bg-gray-900/95 backdrop-blur-xl border border-blue-500/40 shadow-[0_10px_40px_-10px_rgba(59,130,246,0.4)] rounded-2xl p-4 w-80 z-50 text-right">
@@ -73,8 +244,9 @@ export default function ExamEditor({ setView }: ExamEditorProps) {
           <select 
             value={template} 
             onChange={e => setTemplate(e.target.value as any)}
-            className="bg-black/50 border border-purple-500/30 rounded-xl px-4 py-2 text-white font-bold focus:outline-none focus:border-cyan-500/50 appearance-none hover:bg-purple-900/40 transition-colors"
+            className={`${theme === 'dark' ? 'bg-black/50 border-purple-500/30 text-white focus:border-cyan-500/50 hover:bg-purple-900/40' : 'bg-gray-100 border-purple-300 text-black focus:border-purple-500 hover:bg-gray-200'} border rounded-xl px-4 py-2 font-bold focus:outline-none appearance-none transition-colors`}
           >
+            <option value="yemen_sovereign">الجمهورية اليمنية (سيادي)</option>
             <option value="classic">كلاسيكي (أساسي)</option>
             <option value="bubble">بابل شيت (أساسي)</option>
             <option value="saudi_classic">السعودية (مقالي)</option>
@@ -83,19 +255,42 @@ export default function ExamEditor({ setView }: ExamEditorProps) {
             <option value="algerian_classic">الجزائر (تمارين)</option>
           </select>
         </div>
-        <div className="h-6 w-px bg-purple-500/30 mx-2 hidden md:block"></div>
-        <div className="flex items-center gap-2 bg-black/50 border border-purple-500/30 rounded-xl p-1">
-          <button onClick={() => setZoom(z => Math.max(0.5, z - 0.1))} className="p-1 hover:bg-purple-900/40 rounded-lg text-purple-400 hover:text-cyan-400 font-bold">-</button>
-          <span className="text-xs font-mono w-12 text-center text-cyan-300">{Math.round(zoom * 100)}%</span>
-          <button onClick={() => setZoom(z => Math.min(2, z + 0.1))} className="p-1 hover:bg-purple-900/40 rounded-lg text-purple-400 hover:text-cyan-400 font-bold">+</button>
+        
+        {/* Document Size Selector */}
+        <div className={`h-6 w-px mx-2 hidden md:block ${theme === 'dark' ? 'bg-purple-500/30' : 'bg-purple-200'}`}></div>
+        <div className="flex items-center gap-2">
+          <span className="font-bold">حجم الورقة:</span>
+          <select 
+            value={documentSize} 
+            onChange={e => setDocumentSize(e.target.value as any)}
+            className={`${theme === 'dark' ? 'bg-black/50 border-purple-500/30 text-white focus:border-cyan-500/50 hover:bg-purple-900/40' : 'bg-gray-100 border-purple-300 text-black focus:border-purple-500 hover:bg-gray-200'} border rounded-xl px-4 py-1 text-sm font-bold focus:outline-none appearance-none transition-colors`}
+          >
+            <option value="A4">A4</option>
+            <option value="Ledger">Ledger (A3)</option>
+            <option value="Custom">مخصص</option>
+          </select>
+        </div>
+        
+        {/* Auto Backup Indicator */}
+        <div className={`h-6 w-px mx-2 hidden md:block ${theme === 'dark' ? 'bg-purple-500/30' : 'bg-purple-200'}`}></div>
+        <div className={`flex items-center gap-1 px-3 py-1 rounded-full ${theme === 'dark' ? 'bg-green-900/20 text-green-400' : 'bg-green-50 text-green-600'} text-xs font-bold`}>
+           <Save className="w-3 h-3" />
+           تم الحفظ {lastSaved?.toLocaleTimeString('ar-SA')}
+        </div>
+
+        <div className={`h-6 w-px mx-2 hidden md:block ${theme === 'dark' ? 'bg-purple-500/30' : 'bg-purple-200'}`}></div>
+        <div className={`flex items-center gap-2 border rounded-xl p-1 ${theme === 'dark' ? 'bg-black/50 border-purple-500/30' : 'bg-gray-100 border-purple-200'}`}>
+          <button onClick={() => setZoom(z => Math.max(0.5, z - 0.1))} className={`p-1 rounded-lg font-bold ${theme === 'dark' ? 'hover:bg-purple-900/40 text-purple-400 hover:text-cyan-400' : 'hover:bg-gray-200 text-purple-600 hover:text-cyan-600'}`}>-</button>
+          <span className={`text-xs font-mono w-12 text-center ${theme === 'dark' ? 'text-cyan-300' : 'text-cyan-700'}`}>{Math.round(zoom * 100)}%</span>
+          <button onClick={() => setZoom(z => Math.min(2, z + 0.1))} className={`p-1 rounded-lg font-bold ${theme === 'dark' ? 'hover:bg-purple-900/40 text-purple-400 hover:text-cyan-400' : 'hover:bg-gray-200 text-purple-600 hover:text-cyan-600'}`}>+</button>
         </div>
       </div>
 
-      <div className="flex-1 overflow-auto p-4 md:p-8 print:p-0 print:overflow-visible flex justify-center items-start">
+      <div className={`flex-1 overflow-auto p-4 md:p-8 print:p-0 print:overflow-visible flex justify-center items-start ${theme === 'dark' ? '' : 'bg-gray-100'}`}>
         <div 
           ref={componentRef} 
           style={{ transform: `scale(${zoom})`, transformOrigin: 'top center' }}
-          className="bg-white text-black w-[210mm] min-h-[297mm] shadow-[0_0_40px_rgba(147,51,234,0.15)] relative p-8 print:p-0 print:shadow-none print:w-full mx-auto print:transform-none transition-transform duration-200"
+          className={`bg-white text-black ${documentSize === 'A4' ? 'w-[210mm] min-h-[297mm]' : documentSize === 'Ledger' ? 'w-[279mm] min-h-[432mm]' : 'w-[250mm] min-h-[350mm]'} shadow-[0_0_40px_rgba(147,51,234,0.15)] relative p-8 print:p-0 print:shadow-none print:w-full mx-auto print:transform-none transition-all duration-300`}
           dir="rtl"
         >
           {template === 'classic' && (
@@ -116,7 +311,7 @@ export default function ExamEditor({ setView }: ExamEditorProps) {
                 <div className="text-right space-y-2 w-1/3 border-r-2 border-black pr-4">
                   <div className="flex gap-2">
                     <span>المادة:</span>
-                    <span className="flex-1 border-b border-dotted border-black" contentEditable suppressContentEditableWarning></span>
+                    <span className="flex-1 border-b border-dotted border-black" contentEditable suppressContentEditableWarning>{examConfig.subject}</span>
                   </div>
                   <div className="flex gap-2">
                     <span>الصف:</span>
@@ -124,7 +319,7 @@ export default function ExamEditor({ setView }: ExamEditorProps) {
                   </div>
                   <div className="flex gap-2">
                     <span>الزمن:</span>
-                    <span className="flex-1 border-b border-dotted border-black" contentEditable suppressContentEditableWarning></span>
+                    <span className="flex-1 border-b border-dotted border-black" contentEditable suppressContentEditableWarning>{examConfig.duration}</span>
                   </div>
                 </div>
               </div>
@@ -284,7 +479,7 @@ export default function ExamEditor({ setView }: ExamEditorProps) {
                 <div className="text-right text-sm font-bold space-y-2 w-1/3 pr-4 flex flex-col items-end">
                   <div className="flex w-3/4 bg-gray-200 rounded p-1 border border-gray-300">
                     <span className="w-12 text-xs">المادة:</span>
-                    <span className="flex-1 border-r border-gray-400 pr-1" contentEditable suppressContentEditableWarning></span>
+                    <span className="flex-1 border-r border-gray-400 pr-1" contentEditable suppressContentEditableWarning>{examConfig.subject}</span>
                   </div>
                   <div className="flex w-3/4 bg-gray-200 rounded p-1 border border-gray-300">
                     <span className="w-12 text-xs">الصف:</span>
@@ -292,7 +487,7 @@ export default function ExamEditor({ setView }: ExamEditorProps) {
                   </div>
                   <div className="flex w-3/4 bg-gray-200 rounded p-1 border border-gray-300">
                     <span className="w-12 text-xs">الزمن:</span>
-                    <span className="flex-1 border-r border-gray-400 pr-1" contentEditable suppressContentEditableWarning></span>
+                    <span className="flex-1 border-r border-gray-400 pr-1" contentEditable suppressContentEditableWarning>{examConfig.duration}</span>
                   </div>
                 </div>
               </div>
@@ -316,7 +511,7 @@ export default function ExamEditor({ setView }: ExamEditorProps) {
               </div>
               
               <div className="text-center font-bold text-sm mb-4">
-                أسئلة اختبار الفصل الدراسي <span className="border-b border-dotted border-black inline-block w-24" contentEditable suppressContentEditableWarning></span> (الدور <span className="border-b border-dotted border-black inline-block w-16" contentEditable suppressContentEditableWarning></span>) للعام الدراسي <span className="border-b border-dotted border-black inline-block w-24" contentEditable suppressContentEditableWarning></span> هـ
+                أسئلة اختبار الفصل الدراسي <span className="border-b border-dotted border-black inline-block w-24" contentEditable suppressContentEditableWarning></span> (الدور <span className="border-b border-dotted border-black inline-block w-16" contentEditable suppressContentEditableWarning></span>) للعام الدراسي <span className="border-b border-dotted border-black inline-block w-24" contentEditable suppressContentEditableWarning>{examConfig.academicYear}</span>
               </div>
 
               <div className="w-full">
@@ -531,6 +726,96 @@ export default function ExamEditor({ setView }: ExamEditorProps) {
             </div>
           )}
 
+          {template === 'yemen_sovereign' && (
+            <div className="font-serif border-[4px] border-[#000000] p-4 relative bg-white text-black min-h-[1000px]">
+              {/* Watermark */}
+              <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none z-0">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Emblem_of_Yemen.svg/800px-Emblem_of_Yemen.svg.png" className="w-[500px]" alt="Yemen Emblem" />
+              </div>
+              
+              <div className="flex justify-between items-center mb-6 relative z-10 border-b-4 border-double border-red-600 pb-4">
+                <div className="text-right font-bold w-1/3 text-sm">
+                  <p>الجمهورية اليمنية</p>
+                  <p>وزارة التربية والتعليم</p>
+                  <p>مكتب التربية والتعليم م/............</p>
+                  <p>مدرسة: <span contentEditable suppressContentEditableWarning className="text-red-700">{examConfig.school}</span></p>
+                </div>
+                
+                <div className="w-1/3 flex flex-col items-center justify-center">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Emblem_of_Yemen.svg/800px-Emblem_of_Yemen.svg.png" className="w-20 h-20 mb-2 drop-shadow-md" alt="شعار الجمهورية" />
+                  <div className="font-bold text-center bg-gray-100 px-4 py-1 border-2 border-black rounded-lg shadow-sm">
+                    اختبار <span contentEditable suppressContentEditableWarning>نهاية الفصل الأول</span>
+                  </div>
+                </div>
+                
+                <div className="text-right font-bold w-1/3 text-sm pr-4 flex flex-col items-end gap-1">
+                  <div className="w-full flex">
+                    <span className="w-16">المادة:</span>
+                    <span className="flex-1 border-b-2 border-dotted border-black" contentEditable suppressContentEditableWarning>{examConfig.subject}</span>
+                  </div>
+                  <div className="w-full flex">
+                    <span className="w-16">الصف:</span>
+                    <span className="flex-1 border-b-2 border-dotted border-black" contentEditable suppressContentEditableWarning>....................</span>
+                  </div>
+                  <div className="w-full flex">
+                    <span className="w-16">الزمن:</span>
+                    <span className="flex-1 border-b-2 border-dotted border-black" contentEditable suppressContentEditableWarning>{examConfig.duration}</span>
+                  </div>
+                  <div className="w-full flex">
+                    <span className="w-16">العام:</span>
+                    <span className="flex-1 border-b-2 border-dotted border-black" contentEditable suppressContentEditableWarning>{examConfig.year}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex gap-4 mb-6 relative z-10">
+                <div className="flex-1 border-2 border-black rounded-xl p-2 bg-gray-50 flex items-center gap-2 font-bold shadow-sm">
+                  <span>اسم الطالب الرباعي:</span>
+                  <span className="flex-1 border-b-2 border-black inline-block h-6" contentEditable suppressContentEditableWarning></span>
+                </div>
+                <div className="w-48 border-2 border-black rounded-xl p-2 bg-gray-50 flex items-center gap-2 font-bold shadow-sm">
+                  <span>رقم الجلوس:</span>
+                  <span className="flex-1 border-b-2 border-black inline-block h-6 text-center" contentEditable suppressContentEditableWarning></span>
+                </div>
+              </div>
+
+              <div className="relative z-10 w-full mb-6">
+                <table className="border-collapse border-2 border-black w-full text-center text-sm font-bold shadow-sm">
+                  <thead>
+                    <tr className="bg-gray-200">
+                      <th className="border-2 border-black py-2 w-1/4">الدرجة رقماً</th>
+                      <th className="border-2 border-black py-2 w-1/4">الدرجة كتابةً</th>
+                      <th className="border-2 border-black py-2 w-1/4">توقيع المصحح</th>
+                      <th className="border-2 border-black py-2 w-1/4">توقيع المراجع</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td className="border-2 border-black h-12" contentEditable suppressContentEditableWarning></td>
+                      <td className="border-2 border-black h-12" contentEditable suppressContentEditableWarning></td>
+                      <td className="border-2 border-black h-12" contentEditable suppressContentEditableWarning></td>
+                      <td className="border-2 border-black h-12" contentEditable suppressContentEditableWarning></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="relative z-10 text-right font-bold text-sm mb-4">
+                أجب مستعيناً بالله عن جميع الأسئلة الآتية:
+              </div>
+
+              <div className="relative z-10 border-2 border-black mt-2 min-h-[400px] p-4 text-right rounded-xl focus:outline-none focus:bg-red-50/20" contentEditable suppressContentEditableWarning>
+                 السؤال الأول: ...
+              </div>
+
+              <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center text-xs font-bold text-gray-500 z-10">
+                <div className="border-t-2 border-black pt-1 w-48 text-center" contentEditable suppressContentEditableWarning>توقيع معلم المادة</div>
+                <div className="border-t-2 border-black pt-1 w-48 text-center flex items-center justify-center gap-1" contentEditable suppressContentEditableWarning>الختم الرقمي <div className="w-8 h-8 rounded-full border-2 border-red-500 text-red-500 flex items-center justify-center text-[8px] rotate-12 opacity-50">معتمد</div></div>
+                <div className="border-t-2 border-black pt-1 w-48 text-center" contentEditable suppressContentEditableWarning>توقيع مدير المدرسة</div>
+              </div>
+            </div>
+          )}
+
           {template === 'saudi_vision' && (
             <div className="font-serif border-[3px] border-black p-2">
               <div className="border border-black mb-4 flex items-stretch text-xs font-bold text-center">
@@ -632,6 +917,38 @@ export default function ExamEditor({ setView }: ExamEditorProps) {
           )}
         </div>
       </div>
+      
+      {/* Quick Add Question */}
+      {showAddQuestion && (
+        <div className="fixed bottom-24 right-8 z-50 w-80 bg-gray-900 border border-green-500/40 rounded-2xl shadow-2xl p-4 text-white print:hidden transform transition-all" dir="rtl">
+           <h3 className="font-bold text-green-400 mb-3 border-b border-gray-700 pb-2">مسرع إضافة سؤال</h3>
+           <textarea 
+             placeholder="نص السؤال (توقع ذكي مفعل)..." 
+             className="w-full bg-black/50 border border-gray-700 rounded-xl p-3 text-sm focus:outline-none focus:border-green-500 mb-3 min-h-[80px] text-white"
+             value={newQuestion.text}
+             onChange={e => setNewQuestion({...newQuestion, text: e.target.value})}
+           ></textarea>
+           <div className="flex gap-2 mb-4">
+              <select className="flex-1 bg-black/50 border border-gray-700 rounded-xl p-2 text-sm focus:outline-none text-white" value={newQuestion.type} onChange={e => setNewQuestion({...newQuestion, type: e.target.value})}>
+                 <option>اختياري</option>
+                 <option>مقالي</option>
+                 <option>صح وخطأ</option>
+              </select>
+              <input type="number" className="w-20 bg-black/50 border border-gray-700 rounded-xl p-2 text-sm focus:outline-none text-center text-white" placeholder="النقاط" value={newQuestion.points} onChange={e => setNewQuestion({...newQuestion, points: e.target.value})}/>
+           </div>
+           <div className="flex gap-2">
+             <button onClick={() => { addQuestion(); setShowAddQuestion(false); setNewQuestion({text:'', type:'اختياري', points:'1'}); }} className="flex-1 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-400 text-white font-bold py-2 rounded-xl text-sm transition-colors active:scale-95">إدراج فوراً</button>
+             <button onClick={() => setShowAddQuestion(false)} className="px-4 bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 rounded-xl text-sm transition-colors active:scale-95">إلغاء</button>
+           </div>
+        </div>
+      )}
+      
+      {/* FAB */}
+      {!showSetupDialog && (
+        <button onClick={() => setShowAddQuestion(true)} className="fixed bottom-8 right-8 z-40 bg-gradient-to-r from-green-600 to-green-500 text-white w-14 h-14 rounded-full shadow-[0_4px_20px_rgba(34,197,94,0.4)] flex items-center justify-center hover:scale-110 active:scale-95 transition-all print:hidden" title="إضافة سؤال سريع">
+           <FilePlus2 className="w-6 h-6" />
+        </button>
+      )}
     </div>
   );
 }

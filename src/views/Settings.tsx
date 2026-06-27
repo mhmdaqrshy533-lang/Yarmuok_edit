@@ -1,4 +1,5 @@
 import { ArrowRight, Save } from 'lucide-react';
+import React from 'react';
 import { ViewState } from '../types';
 import { useStore } from '../store';
 

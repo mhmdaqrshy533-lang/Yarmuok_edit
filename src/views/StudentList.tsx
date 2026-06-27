@@ -1,5 +1,5 @@
 import { ArrowRight, Search, Plus, Trash2, Edit3, Eye, Download, Upload } from 'lucide-react';
-import { useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { ViewState, Student } from '../types';
 import { useStore } from '../store';
 
@@ -49,6 +49,7 @@ export default function StudentList({ setView }: StudentListProps) {
             birthDate: parts[2]?.trim() || '',
             birthPlace: parts[3]?.trim() || '',
             gender: (parts[4]?.trim() as any) || 'ذكر',
+            guardian: '',
             schoolYear: '2025 / 2026',
             grades: {
               month1: { homework: null, attendance: null, oral: null, written: null }
