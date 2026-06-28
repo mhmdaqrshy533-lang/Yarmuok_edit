@@ -1,12 +1,24 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Noto+Kufi+Arabic:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Cairo", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Noto Kufi Arabic", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Cairo", ui-serif, Georgia, serif;
 }
 
 body {
   font-family: var(--font-sans);
+  background-color: #121619;
+  color: #fff;
+  direction: rtl;
   -webkit-tap-highlight-color: transparent;
+}
+
+@media print {
+  body {
+    background-color: white;
+    color: black;
+  }
 }
 
 /* Custom scrollbar for tables */
@@ -15,12 +27,12 @@ body {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #f1f1f1; 
+  background: rgba(0, 0, 0, 0.2); 
 }
 ::-webkit-scrollbar-thumb {
-  background: #c084fc; 
+  background: rgba(16, 185, 129, 0.3); 
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #a855f7; 
+  background: rgba(16, 185, 129, 0.5); 
 }

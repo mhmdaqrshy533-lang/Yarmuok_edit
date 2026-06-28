@@ -61,15 +61,15 @@ export default function StudentForm({ setView }: StudentFormProps) {
   };
 
   return (
-    <div className="flex flex-col h-full bg-black relative text-gray-200">
+    <div className="flex flex-col h-full bg-[#121619] relative text-gray-200">
       {/* Top Bar */}
-      <div className="bg-gray-900/90 backdrop-blur-xl text-white flex items-center justify-between p-4 shadow-[0_4px_30px_rgba(147,51,234,0.15)] z-10 sticky top-0 border-b border-purple-500/20">
+      <div className="bg-[#0f291e]/90 backdrop-blur-xl text-white flex items-center justify-between p-4 shadow-[0_4px_30px_rgba(16,185,129,0.15)] z-10 sticky top-0 border-b border-emerald-500/20">
         <button onClick={() => setView('student_list')} className="p-2 hover:bg-white/10 rounded-xl transition-colors group">
-          <ArrowRight className="w-5 h-5 text-purple-400 group-hover:text-cyan-400" />
+          <ArrowRight className="w-5 h-5 text-emerald-400 group-hover:text-emerald-300" />
         </button>
         <div className="text-center flex-1">
-          <h1 className="font-bold text-lg text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400">إدخال بيانات الطالب</h1>
-          <p className="text-xs text-purple-300">سجل {editingStudentId ? 'تعديل' : 'جديد'}</p>
+          <h1 className="font-black text-lg text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 tracking-wide">إدخال بيانات الطالب</h1>
+          <p className="text-xs text-emerald-300/80">سجل {editingStudentId ? 'تعديل' : 'جديد'}</p>
         </div>
         <div className="w-9"></div> {/* Spacer for centering */}
       </div>
@@ -77,15 +77,15 @@ export default function StudentForm({ setView }: StudentFormProps) {
       <div className="flex-1 overflow-auto p-4 md:p-8 w-full max-w-3xl mx-auto space-y-6 text-right pb-32" dir="rtl">
         
         {/* Basic Info Section */}
-        <div className="bg-gray-900/60 backdrop-blur-xl p-6 rounded-3xl shadow-[0_0_30px_rgba(147,51,234,0.1)] border border-purple-500/20 space-y-4">
-          <h2 className="font-bold text-cyan-400 text-base border-b border-purple-500/30 pb-3 flex items-center gap-2">
+        <div className="bg-[#1a2320]/60 backdrop-blur-xl p-6 rounded-3xl shadow-[0_0_30px_rgba(16,185,129,0.1)] border border-emerald-500/20 space-y-4">
+          <h2 className="font-bold text-teal-400 text-base border-b border-emerald-500/30 pb-3 flex items-center gap-2">
             البيانات الأساسية
           </h2>
           <div className="relative">
             <label className="text-sm font-bold text-gray-400 block mb-2 flex items-center gap-2">
               اسم الطالب رباعياً
-              <span className="text-xs bg-gradient-to-r from-purple-500 to-cyan-500 text-transparent bg-clip-text font-black flex items-center gap-1">
-                <Sparkles className="w-3 h-3 text-cyan-400" /> إدخال تنبؤي ذكي
+              <span className="text-xs bg-gradient-to-r from-emerald-500 to-teal-500 text-transparent bg-clip-text font-black flex items-center gap-1">
+                <Sparkles className="w-3 h-3 text-teal-400" /> إدخال تنبؤي ذكي
               </span>
             </label>
             <input 
@@ -97,7 +97,7 @@ export default function StudentForm({ setView }: StudentFormProps) {
                 setFormData({...formData, name: e.target.value});
                 setShowPredictions(true);
               }}
-              className="w-full border border-purple-500/30 rounded-2xl py-3 px-4 text-base bg-black/50 text-white focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all" 
+              className="w-full border border-emerald-500/30 rounded-2xl py-3 px-4 text-base bg-[#0a1712]/50 text-white focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-transparent transition-all" 
               placeholder="اكتب الحرف الأول..."
             />
             {showPredictions && formData.name && (

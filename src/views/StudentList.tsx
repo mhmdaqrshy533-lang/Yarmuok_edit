@@ -71,19 +71,19 @@ export default function StudentList({ setView }: StudentListProps) {
   };
 
   return (
-    <div className="flex flex-col h-full bg-black relative text-gray-200">
+    <div className="flex flex-col h-full bg-[#121619] relative text-gray-200">
       {/* Top Bar */}
-      <div className="bg-gray-900/90 backdrop-blur-xl text-white flex items-center p-4 shadow-[0_4px_30px_rgba(147,51,234,0.15)] z-10 sticky top-0 border-b border-purple-500/20">
+      <div className="bg-[#0f291e]/90 backdrop-blur-xl text-white flex items-center p-4 shadow-[0_4px_30px_rgba(16,185,129,0.15)] z-10 sticky top-0 border-b border-emerald-500/20">
         <button onClick={() => setView('home')} className="absolute right-4 p-2 hover:bg-white/10 rounded-xl transition-colors group">
-          <ArrowRight className="w-5 h-5 text-purple-400 group-hover:text-cyan-400" />
+          <ArrowRight className="w-5 h-5 text-emerald-400 group-hover:text-emerald-300" />
         </button>
         <div className="flex-1 text-center flex items-center justify-center gap-4">
-          <h1 className="font-bold text-lg text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400">سجلات الطلاب</h1>
-          <div className="hidden md:flex gap-2 bg-black/30 p-1 rounded-xl border border-purple-500/30">
-            <button onClick={exportToCSV} className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-purple-900/50 text-cyan-300 transition-colors text-sm font-bold">
+          <h1 className="font-black text-lg text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 tracking-wide">سجلات الطلاب</h1>
+          <div className="hidden md:flex gap-2 bg-[#0a1712]/50 p-1 rounded-xl border border-emerald-500/30">
+            <button onClick={exportToCSV} className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-emerald-900/50 text-cyan-300 transition-colors text-sm font-bold">
               <Download className="w-4 h-4" /> تصدير
             </button>
-            <button onClick={() => fileInputRef.current?.click()} className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-purple-900/50 text-fuchsia-300 transition-colors text-sm font-bold">
+            <button onClick={() => fileInputRef.current?.click()} className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-emerald-900/50 text-emerald-300 transition-colors text-sm font-bold">
               <Upload className="w-4 h-4" /> استيراد
             </button>
             <input type="file" accept=".csv" ref={fileInputRef} className="hidden" onChange={importFromCSV} />
@@ -93,14 +93,14 @@ export default function StudentList({ setView }: StudentListProps) {
 
       <div className="flex-1 overflow-auto p-4 md:p-8 w-full max-w-5xl mx-auto flex flex-col space-y-6">
         {/* Search and Add */}
-        <div className="bg-gray-900/60 backdrop-blur-xl p-5 rounded-3xl shadow-[0_0_30px_rgba(147,51,234,0.1)] border border-purple-500/20">
+        <div className="bg-[#1a2320]/60 backdrop-blur-xl p-5 rounded-3xl shadow-[0_0_30px_rgba(16,185,129,0.1)] border border-emerald-500/20">
           <div className="flex flex-col md:flex-row items-center gap-4">
             <button 
               onClick={() => {
                 setEditingStudentId(null);
                 setView('student_form');
               }}
-              className="w-full md:w-auto bg-gradient-to-r from-purple-600 to-cyan-600 text-white px-8 py-3 rounded-2xl font-bold shadow-[0_0_15px_rgba(147,51,234,0.3)] hover:from-purple-500 hover:to-cyan-500 hover:shadow-[0_0_25px_rgba(34,211,238,0.4)] transition-all whitespace-nowrap flex items-center justify-center gap-2"
+              className="w-full md:w-auto bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-8 py-3 rounded-2xl font-bold shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:from-emerald-500 hover:to-teal-500 hover:shadow-[0_0_25px_rgba(20,184,166,0.4)] transition-all whitespace-nowrap flex items-center justify-center gap-2"
             >
               <Plus className="w-5 h-5" />
               طالب جديد
@@ -111,12 +111,12 @@ export default function StudentList({ setView }: StudentListProps) {
                 placeholder="بحث بالاسم أو رقم الجلوس"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full border border-purple-500/30 rounded-2xl py-3 px-4 text-base bg-black/50 text-white text-right focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all font-medium placeholder-gray-500"
+                className="w-full border border-emerald-500/30 rounded-2xl py-3 px-4 text-base bg-[#0a1712]/50 text-white text-right focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-transparent transition-all font-medium placeholder-gray-500"
                 dir="rtl"
               />
             </div>
           </div>
-          <div className="flex justify-between items-center mt-4 text-sm text-cyan-200/70 px-2 font-medium">
+          <div className="flex justify-between items-center mt-4 text-sm text-teal-200/70 px-2 font-medium">
             <span>إجمالي السجلات: {students.length}</span>
             <span>الظاهر: {filteredStudents.length}</span>
           </div>
@@ -125,26 +125,26 @@ export default function StudentList({ setView }: StudentListProps) {
         {/* List Area */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {filteredStudents.map((student, index) => (
-            <div key={student.id} className="bg-gray-900/40 backdrop-blur-xl rounded-3xl shadow-lg border border-gray-800 hover:border-purple-500/40 overflow-hidden hover:shadow-[0_0_20px_rgba(147,51,234,0.15)] transition-all group">
-            <div className="p-4 border-b border-gray-800 flex justify-between items-start bg-black/20">
+            <div key={student.id} className="bg-[#1a2320]/40 backdrop-blur-xl rounded-3xl shadow-lg border border-emerald-900/40 hover:border-emerald-500/40 overflow-hidden hover:shadow-[0_0_20px_rgba(16,185,129,0.15)] transition-all group">
+            <div className="p-4 border-b border-emerald-900/50 flex justify-between items-start bg-black/20">
               <div className="flex flex-col gap-1 w-full text-right">
                 <div className="flex justify-between items-center w-full mb-2">
-                  <span className="bg-purple-900/40 text-purple-300 text-xs px-3 py-1 rounded-full font-bold self-start border border-purple-500/30">{student.gender}</span>
+                  <span className="bg-emerald-900/40 text-emerald-300 text-xs px-3 py-1 rounded-full font-bold self-start border border-emerald-500/30">{student.gender}</span>
                   <div className="flex items-center gap-2">
-                    <h3 className="font-bold text-gray-100 text-base group-hover:text-cyan-400 transition-colors">{student.name}</h3>
-                    <span className="text-purple-400 font-bold bg-purple-900/30 px-2 py-0.5 rounded-md">{index + 1}</span>
+                    <h3 className="font-bold text-gray-100 text-base group-hover:text-teal-400 transition-colors">{student.name}</h3>
+                    <span className="text-emerald-400 font-bold bg-emerald-900/30 px-2 py-0.5 rounded-md">{index + 1}</span>
                   </div>
                 </div>
                 <p className="text-xs text-gray-400 ml-auto">{student.birthPlace} • {student.birthDate}</p>
               </div>
             </div>
             
-            <div className="px-4 py-3 bg-black/40 border-b border-gray-800 flex justify-between items-center text-sm font-bold">
-              <div className="flex items-center text-cyan-300 bg-cyan-900/30 px-3 py-1 rounded-lg text-xs border border-cyan-500/30">
+            <div className="px-4 py-3 bg-black/40 border-b border-emerald-900/50 flex justify-between items-center text-sm font-bold">
+              <div className="flex items-center text-teal-300 bg-teal-900/30 px-3 py-1 rounded-lg text-xs border border-teal-500/30">
                 مقعد: <span className="mr-1 text-white">{student.seatNumber || '—'}</span>
               </div>
               <div className="flex gap-2">
-                <span className="text-fuchsia-300 bg-fuchsia-900/30 px-3 py-1 rounded-lg text-xs border border-fuchsia-500/30">{student.schoolYear}</span>
+                <span className="text-emerald-300 bg-emerald-900/30 px-3 py-1 rounded-lg text-xs border border-emerald-500/30">{student.schoolYear}</span>
               </div>
             </div>
 
@@ -163,13 +163,13 @@ export default function StudentList({ setView }: StudentListProps) {
               )}
             </div>
 
-            <div className="flex bg-black/60 border-t border-gray-800">
+            <div className="flex bg-[#0f1714] border-t border-emerald-900/50">
               <button 
                 onClick={() => {
                   setEditingStudentId(student.id);
                   setView('student_form');
                 }}
-                className="flex-1 py-3 text-center text-sm font-bold text-cyan-400 hover:bg-purple-900/40 border-l border-gray-800 transition-colors"
+                className="flex-1 py-3 text-center text-sm font-bold text-teal-400 hover:bg-emerald-900/40 border-l border-emerald-900/50 transition-colors"
               >
                 تعديل السجل
               </button>
@@ -185,8 +185,8 @@ export default function StudentList({ setView }: StudentListProps) {
           </div>
         ))}
         {filteredStudents.length === 0 && (
-          <div className="col-span-1 md:col-span-2 text-center py-16 text-gray-500 bg-gray-900/40 backdrop-blur-md rounded-3xl border border-gray-800">
-            <Search className="w-12 h-12 mx-auto mb-4 text-purple-500/30" />
+          <div className="col-span-1 md:col-span-2 text-center py-16 text-gray-500 bg-[#1a2320]/40 backdrop-blur-md rounded-3xl border border-emerald-900/40">
+            <Search className="w-12 h-12 mx-auto mb-4 text-emerald-500/30" />
             <p className="font-medium text-lg">لا توجد سجلات مطابقة للبحث</p>
           </div>
         )}

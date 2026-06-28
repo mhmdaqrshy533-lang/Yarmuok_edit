@@ -254,13 +254,22 @@ export default function CertificateView({ setView }: CertificateViewProps) {
               <span className="mb-8" contentEditable suppressContentEditableWarning>النتيجة: <span className="text-red-600 border-b border-dotted border-gray-400">ناجــــــح</span> :Result</span>
               <span className="border-t border-gray-400 pt-2 w-48" contentEditable suppressContentEditableWarning>مربي الصف<br/>Class Teacher</span>
             </div>
+            
+            {/* Tamper-Proof Digital Seal */}
+            <div className="flex flex-col items-center justify-center -mt-4 opacity-80" title="ختم رقمي مضاد للتلاعب">
+               <div className="w-20 h-20 border-4 border-double border-emerald-600 rounded-full flex flex-col items-center justify-center mb-1 relative">
+                 <div className="absolute inset-0 border border-emerald-400 rounded-full scale-[0.8] rotate-45 border-dashed"></div>
+                 <div className="text-emerald-700 font-black text-xs leading-none">ΣIGMA</div>
+                 <div className="text-[6px] text-emerald-600 mt-1 uppercase">Tamper-Proof</div>
+               </div>
+               <div className="text-[8px] font-mono text-gray-500 uppercase tracking-widest bg-gray-100 px-2 py-0.5 border border-gray-200 rounded">
+                 ID: {selectedStudent?.id?.substring(0, 8) || 'VERIFIED'}
+               </div>
+            </div>
+
             <div className="flex flex-col items-center">
               <span className="mb-8" contentEditable suppressContentEditableWarning>النسبة المئوية: <span className="text-red-600 border-b border-dotted border-gray-400">94.71%</span> :Percentage</span>
               <span className="border-t border-gray-400 pt-2 w-48" suppressContentEditableWarning>{settings.principalName}<br/>School Principal</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <span className="mb-8" contentEditable suppressContentEditableWarning>التقدير: <span className="text-red-600 border-b border-dotted border-gray-400">ممتاز</span> :Grade</span>
-              <span className="border-t border-gray-400 pt-2 w-48" suppressContentEditableWarning>{settings.schoolSealText}<br/>School Seal</span>
             </div>
           </div>
         </div>

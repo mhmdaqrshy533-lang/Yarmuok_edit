@@ -727,91 +727,93 @@ export default function ExamEditor({ setView }: ExamEditorProps) {
           )}
 
           {template === 'yemen_sovereign' && (
-            <div className="font-serif border-[4px] border-[#000000] p-4 relative bg-white text-black min-h-[1000px]">
+            <div className="font-serif border-[4px] border-[#10b981] p-4 relative bg-white text-black min-h-[1000px]">
               {/* Watermark */}
-              <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none z-0">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Emblem_of_Yemen.svg/800px-Emblem_of_Yemen.svg.png" className="w-[500px]" alt="Yemen Emblem" />
+              <div className="absolute inset-0 flex items-center justify-center opacity-[0.05] pointer-events-none z-0">
+                <div className="text-[200px] font-black text-emerald-800 -rotate-45">ΣIGMA</div>
               </div>
               
-              <div className="flex justify-between items-center mb-6 relative z-10 border-b-4 border-double border-red-600 pb-4">
+              <div className="flex justify-between items-center mb-6 relative z-10 border-b-4 border-double border-emerald-600 pb-4">
                 <div className="text-right font-bold w-1/3 text-sm">
                   <p>الجمهورية اليمنية</p>
                   <p>وزارة التربية والتعليم</p>
                   <p>مكتب التربية والتعليم م/............</p>
-                  <p>مدرسة: <span contentEditable suppressContentEditableWarning className="text-red-700">{examConfig.school}</span></p>
+                  <p>مدرسة: <span contentEditable suppressContentEditableWarning className="text-emerald-700">{examConfig.school}</span></p>
                 </div>
                 
                 <div className="w-1/3 flex flex-col items-center justify-center">
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Emblem_of_Yemen.svg/800px-Emblem_of_Yemen.svg.png" className="w-20 h-20 mb-2 drop-shadow-md" alt="شعار الجمهورية" />
-                  <div className="font-bold text-center bg-gray-100 px-4 py-1 border-2 border-black rounded-lg shadow-sm">
+                  <div className="w-20 h-20 mb-2 border-4 border-emerald-600 rounded-full flex items-center justify-center bg-emerald-50">
+                    <span className="text-4xl font-serif text-emerald-600 font-bold">Σ</span>
+                  </div>
+                  <div className="font-bold text-center bg-gray-100 px-4 py-1 border-2 border-emerald-800 rounded-lg shadow-sm">
                     اختبار <span contentEditable suppressContentEditableWarning>نهاية الفصل الأول</span>
                   </div>
                 </div>
                 
                 <div className="text-right font-bold w-1/3 text-sm pr-4 flex flex-col items-end gap-1">
                   <div className="w-full flex">
-                    <span className="w-16">المادة:</span>
-                    <span className="flex-1 border-b-2 border-dotted border-black" contentEditable suppressContentEditableWarning>{examConfig.subject}</span>
+                    <span className="w-16 text-emerald-800">المادة:</span>
+                    <span className="flex-1 border-b-2 border-dotted border-emerald-800" contentEditable suppressContentEditableWarning>{examConfig.subject}</span>
                   </div>
                   <div className="w-full flex">
-                    <span className="w-16">الصف:</span>
-                    <span className="flex-1 border-b-2 border-dotted border-black" contentEditable suppressContentEditableWarning>....................</span>
+                    <span className="w-16 text-emerald-800">الصف:</span>
+                    <span className="flex-1 border-b-2 border-dotted border-emerald-800" contentEditable suppressContentEditableWarning>....................</span>
                   </div>
                   <div className="w-full flex">
-                    <span className="w-16">الزمن:</span>
-                    <span className="flex-1 border-b-2 border-dotted border-black" contentEditable suppressContentEditableWarning>{examConfig.duration}</span>
+                    <span className="w-16 text-emerald-800">الزمن:</span>
+                    <span className="flex-1 border-b-2 border-dotted border-emerald-800" contentEditable suppressContentEditableWarning>{examConfig.duration}</span>
                   </div>
                   <div className="w-full flex">
-                    <span className="w-16">العام:</span>
-                    <span className="flex-1 border-b-2 border-dotted border-black" contentEditable suppressContentEditableWarning>{examConfig.year}</span>
+                    <span className="w-16 text-emerald-800">العام:</span>
+                    <span className="flex-1 border-b-2 border-dotted border-emerald-800" contentEditable suppressContentEditableWarning>{examConfig.year}</span>
                   </div>
                 </div>
               </div>
 
               <div className="flex gap-4 mb-6 relative z-10">
-                <div className="flex-1 border-2 border-black rounded-xl p-2 bg-gray-50 flex items-center gap-2 font-bold shadow-sm">
-                  <span>اسم الطالب الرباعي:</span>
-                  <span className="flex-1 border-b-2 border-black inline-block h-6" contentEditable suppressContentEditableWarning></span>
+                <div className="flex-1 border-2 border-emerald-800 rounded-xl p-2 bg-emerald-50/50 flex items-center gap-2 font-bold shadow-sm">
+                  <span className="text-emerald-900">اسم الطالب الرباعي:</span>
+                  <span className="flex-1 border-b-2 border-emerald-800 inline-block h-6" contentEditable suppressContentEditableWarning></span>
                 </div>
-                <div className="w-48 border-2 border-black rounded-xl p-2 bg-gray-50 flex items-center gap-2 font-bold shadow-sm">
-                  <span>رقم الجلوس:</span>
-                  <span className="flex-1 border-b-2 border-black inline-block h-6 text-center" contentEditable suppressContentEditableWarning></span>
+                <div className="w-48 border-2 border-emerald-800 rounded-xl p-2 bg-emerald-50/50 flex items-center gap-2 font-bold shadow-sm">
+                  <span className="text-emerald-900">رقم الجلوس:</span>
+                  <span className="flex-1 border-b-2 border-emerald-800 inline-block h-6 text-center" contentEditable suppressContentEditableWarning></span>
                 </div>
               </div>
 
               <div className="relative z-10 w-full mb-6">
-                <table className="border-collapse border-2 border-black w-full text-center text-sm font-bold shadow-sm">
+                <table className="border-collapse border-2 border-emerald-800 w-full text-center text-sm font-bold shadow-sm">
                   <thead>
-                    <tr className="bg-gray-200">
-                      <th className="border-2 border-black py-2 w-1/4">الدرجة رقماً</th>
-                      <th className="border-2 border-black py-2 w-1/4">الدرجة كتابةً</th>
-                      <th className="border-2 border-black py-2 w-1/4">توقيع المصحح</th>
-                      <th className="border-2 border-black py-2 w-1/4">توقيع المراجع</th>
+                    <tr className="bg-emerald-100 text-emerald-900">
+                      <th className="border-2 border-emerald-800 py-2 w-1/4">الدرجة رقماً</th>
+                      <th className="border-2 border-emerald-800 py-2 w-1/4">الدرجة كتابةً</th>
+                      <th className="border-2 border-emerald-800 py-2 w-1/4">توقيع المصحح</th>
+                      <th className="border-2 border-emerald-800 py-2 w-1/4">توقيع المراجع</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
-                      <td className="border-2 border-black h-12" contentEditable suppressContentEditableWarning></td>
-                      <td className="border-2 border-black h-12" contentEditable suppressContentEditableWarning></td>
-                      <td className="border-2 border-black h-12" contentEditable suppressContentEditableWarning></td>
-                      <td className="border-2 border-black h-12" contentEditable suppressContentEditableWarning></td>
+                      <td className="border-2 border-emerald-800 h-12 bg-white" contentEditable suppressContentEditableWarning></td>
+                      <td className="border-2 border-emerald-800 h-12 bg-white" contentEditable suppressContentEditableWarning></td>
+                      <td className="border-2 border-emerald-800 h-12 bg-white" contentEditable suppressContentEditableWarning></td>
+                      <td className="border-2 border-emerald-800 h-12 bg-white" contentEditable suppressContentEditableWarning></td>
                     </tr>
                   </tbody>
                 </table>
               </div>
 
-              <div className="relative z-10 text-right font-bold text-sm mb-4">
+              <div className="relative z-10 text-right font-bold text-sm mb-4 text-emerald-900 bg-emerald-50 inline-block px-4 py-1 rounded-full border border-emerald-200">
                 أجب مستعيناً بالله عن جميع الأسئلة الآتية:
               </div>
 
-              <div className="relative z-10 border-2 border-black mt-2 min-h-[400px] p-4 text-right rounded-xl focus:outline-none focus:bg-red-50/20" contentEditable suppressContentEditableWarning>
+              <div className="relative z-10 border-2 border-emerald-200 mt-2 min-h-[400px] p-4 text-right rounded-xl focus:outline-none focus:bg-emerald-50/20 focus:border-emerald-500 transition-colors" contentEditable suppressContentEditableWarning>
                  السؤال الأول: ...
               </div>
 
-              <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center text-xs font-bold text-gray-500 z-10">
-                <div className="border-t-2 border-black pt-1 w-48 text-center" contentEditable suppressContentEditableWarning>توقيع معلم المادة</div>
-                <div className="border-t-2 border-black pt-1 w-48 text-center flex items-center justify-center gap-1" contentEditable suppressContentEditableWarning>الختم الرقمي <div className="w-8 h-8 rounded-full border-2 border-red-500 text-red-500 flex items-center justify-center text-[8px] rotate-12 opacity-50">معتمد</div></div>
-                <div className="border-t-2 border-black pt-1 w-48 text-center" contentEditable suppressContentEditableWarning>توقيع مدير المدرسة</div>
+              <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center text-xs font-bold text-emerald-800 z-10">
+                <div className="border-t-2 border-emerald-800 pt-1 w-48 text-center" contentEditable suppressContentEditableWarning>توقيع معلم المادة</div>
+                <div className="border-t-2 border-emerald-800 pt-1 w-48 text-center flex items-center justify-center gap-1" contentEditable suppressContentEditableWarning>الختم الرقمي <div className="w-8 h-8 rounded-full border-2 border-emerald-500 text-emerald-500 flex items-center justify-center text-[8px] rotate-12 opacity-80 shadow-sm bg-white">معتمد</div></div>
+                <div className="border-t-2 border-emerald-800 pt-1 w-48 text-center" contentEditable suppressContentEditableWarning>توقيع مدير المدرسة</div>
               </div>
             </div>
           )}
