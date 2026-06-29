@@ -1,15 +1,89 @@
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Noto+Kufi+Arabic:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Noto+Kufi+Arabic:wght@400;500;600;700;800&family=Amiri:wght@400;700&display=swap');
 @import "tailwindcss";
 
 @theme {
   --font-sans: "Noto Kufi Arabic", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Cairo", ui-serif, Georgia, serif;
+  --font-amiri: "Amiri", ui-serif, Georgia, serif;
+  
+  --color-theme-primary: var(--theme-primary);
+  --color-theme-bg-main: var(--theme-bg-main);
+  --color-theme-bg-card: var(--theme-bg-card);
+  --color-theme-bg-header: var(--theme-bg-header);
+  --color-theme-border: var(--theme-border);
+  --color-theme-accent: var(--theme-accent);
+  --color-theme-accent-hover: var(--theme-accent-hover);
+  --color-theme-text-light: var(--theme-text-light);
+}
+
+:root {
+  --theme-primary: #10b981;
+  --theme-bg-main: #121619;
+  --theme-bg-card: #1a2024;
+  --theme-bg-header: #0f291e;
+  --theme-border: rgba(16, 185, 129, 0.25);
+  --theme-accent: #059669;
+  --theme-accent-hover: #34d399;
+  --theme-text-light: #f3f4f6;
+}
+
+.theme-emerald {
+  --theme-primary: #10b981;
+  --theme-bg-main: #121619;
+  --theme-bg-card: #1a2024;
+  --theme-bg-header: #0f291e;
+  --theme-border: rgba(16, 185, 129, 0.25);
+  --theme-accent: #059669;
+  --theme-accent-hover: #34d399;
+  --theme-text-light: #f3f4f6;
+}
+
+.theme-classic_blue {
+  --theme-primary: #3b82f6;
+  --theme-bg-main: #0f172a;
+  --theme-bg-card: #1e293b;
+  --theme-bg-header: #1e3a8a;
+  --theme-border: rgba(59, 130, 246, 0.25);
+  --theme-accent: #2563eb;
+  --theme-accent-hover: #60a5fa;
+  --theme-text-light: #f1f5f9;
+}
+
+.theme-oled_dark {
+  --theme-primary: #a1a1aa;
+  --theme-bg-main: #000000;
+  --theme-bg-card: #09090b;
+  --theme-bg-header: #18181b;
+  --theme-border: rgba(63, 63, 70, 0.4);
+  --theme-accent: #27272a;
+  --theme-accent-hover: #3f3f46;
+  --theme-text-light: #e4e4e7;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  overscroll-behavior-y: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+input, textarea, [contenteditable] {
+  user-select: auto;
+  -webkit-user-select: auto;
+}
+
+.scrollable-content {
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 body {
   font-family: var(--font-sans);
-  background-color: #121619;
-  color: #fff;
+  background-color: var(--theme-bg-main);
+  color: var(--theme-text-light);
   direction: rtl;
   -webkit-tap-highlight-color: transparent;
 }

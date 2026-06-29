@@ -18,6 +18,14 @@ export interface AppSettings {
   showWatermark: boolean;
   showFrame: boolean;
   
+  // Custom themes and assets
+  theme?: 'emerald' | 'classic_blue' | 'oled_dark';
+  currentFont?: string;
+  customLogo?: string; // base64 school logo
+  customSeal?: string; // base64 school seal
+  licenseKey?: string;
+  isActivated?: boolean;
+
   // Max Points Config
   maxPoints: {
     homework: number;
@@ -26,6 +34,13 @@ export interface AppSettings {
     written: number;
     behavior: number;
   };
+
+  // Evaluation periods
+  evaluationPeriods: Array<{
+    id: string;
+    name: string;
+    weightPercent?: number;
+  }>;
 }
 
 export interface Student {
@@ -41,13 +56,9 @@ export interface Student {
   grade6?: { year: string; school: string; governorate: string; directorate: string; };
   grade7?: { year: string; school: string; governorate: string; directorate: string; };
   grade8?: { year: string; school: string; governorate: string; directorate: string; };
-  // Monthly Grades
-  grades?: {
-    month1?: MonthGrades;
-    month2?: MonthGrades;
-    month3?: MonthGrades;
-  };
-  // Accounting
+  // Monthly Grades / Evaluation Periods
+  grades?: Record<string, MonthGrades>;
+  // Accounting (for backward compatibility / active student summaries)
   accounting?: {
     totalFees: number;
     paidFees: number;

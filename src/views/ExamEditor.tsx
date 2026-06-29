@@ -83,7 +83,7 @@ export default function ExamEditor({ setView }: ExamEditorProps) {
             <CloudDownload className="w-5 h-5"/>
             <span className="hidden md:inline">الخزانة التشاركية</span>
           </button>
-          <button onClick={() => handlePrint()} className={`p-2 rounded-xl transition-colors group ${theme === 'dark' ? 'hover:bg-white/10' : 'hover:bg-gray-100'}`}>
+          <button onClick={() => handlePrint()} data-print="true" className={`p-2 rounded-xl transition-colors group ${theme === 'dark' ? 'hover:bg-white/10' : 'hover:bg-gray-100'}`}>
             <Printer className={`w-5 h-5 ${theme === 'dark' ? 'text-cyan-400 group-hover:text-purple-400' : 'text-cyan-600 group-hover:text-purple-600'}`} />
           </button>
         </div>

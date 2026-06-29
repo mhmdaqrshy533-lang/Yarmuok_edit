@@ -3,6 +3,7 @@ import { ArrowRight, Camera, Upload, CheckCircle2, AlertCircle, RefreshCw, BarCh
 import { ViewState } from '../types';
 import { useStore } from '../store';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
+import { BubbleSheetSVG } from '../components/BubbleSheetSVG';
 
 interface OMRScannerProps {
   setView: (view: ViewState) => void;
@@ -342,6 +343,7 @@ export default function OMRScanner({ setView }: OMRScannerProps) {
                 <h2 className="text-lg font-bold text-emerald-400">طباعة نموذج بابل شيت (A4)</h2>
                 <button 
                   onClick={() => window.print()}
+                  data-print="true"
                   className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-6 rounded-xl flex items-center gap-2 shadow-md"
                 >
                   <Printer className="w-5 h-5" />
@@ -385,26 +387,9 @@ export default function OMRScanner({ setView }: OMRScannerProps) {
                 3. تجنب طي أو تمزيق ورقة الإجابة هذه نهائياً.
               </div>
 
-              {/* Bubbles List */}
-              <div className="grid grid-cols-2 gap-x-12 gap-y-3 pt-4 border-t border-black/10">
-                {Array.from({ length: questionCount }, (_, i) => {
-                  const qNum = i + 1;
-                  return (
-                    <div key={qNum} className="flex items-center justify-between py-2 border-b border-gray-200">
-                      <span className="font-black text-sm w-12 text-right">س {qNum}:</span>
-                      <div className="flex gap-4">
-                        {['A', 'B', 'C', 'D'].map(opt => (
-                          <div key={opt} className="flex flex-col items-center">
-                            <div className="w-6 h-6 rounded-full border-2 border-black flex items-center justify-center font-black text-xs pointer-events-none">
-                              {opt}
-                            </div>
-                            <span className="text-[8px] font-black text-gray-500 mt-0.5">{opt}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  );
-                })}
+              {/* Dynamic SVG Bubble Sheet */}
+              <div className="border-t border-black/10 pt-4">
+                 <BubbleSheetSVG questionCount={questionCount} />
               </div>
 
               {/* Bottom Copyright watermark for Ministry look */}

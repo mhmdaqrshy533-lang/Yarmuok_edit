@@ -1,6 +1,6 @@
 {
-  "name": "School Manager Pro",
-  "description": "A comprehensive school management and grading application.",
-  "requestFramePermissions": [],
+  "name": "نظام سيجما التعليمي - اليمن",
+  "description": "حقيبة المعلم اليمني الشاملة لإدارة المدارس ورصد الدرجات والمحصلات والمصحح الآلي OMR وتوليد الاختبارات بالذكاء الاصطناعي",
+  "requestFramePermissions": ["camera"],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

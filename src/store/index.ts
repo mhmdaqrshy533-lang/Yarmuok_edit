@@ -1,43 +1,57 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { Student, AppSettings } from '../types';
+import { Student, AppSettings, MonthGrades, Transaction } from '../types';
 
 interface AppState {
   settings: AppSettings;
   updateSettings: (settings: Partial<AppSettings>) => void;
   students: Student[];
+  transactions: Record<string, Transaction[]>; // Decoupled audit trail
   editingStudentId: string | null;
   setEditingStudentId: (id: string | null) => void;
   addStudent: (student: Student) => void;
   updateStudent: (id: string, updates: Partial<Student>) => void;
   deleteStudent: (id: string) => void;
-  updateGrade: (studentId: string, month: 'month1' | 'month2' | 'month3', field: keyof Student['grades']['month1'], value: number | null) => void;
+  updateGrade: (studentId: string, periodId: string, field: keyof MonthGrades, value: number | null) => void;
   addTransaction: (studentId: string, transaction: { amount: number, type: 'payment' | 'charge', note: string }) => void;
   deleteTransaction: (studentId: string, transactionId: string) => void;
+  importBackup: (backupData: { settings: AppSettings; students: Student[]; transactions?: Record<string, Transaction[]> }) => void;
+  resetAllData: () => void;
 }
 
 const defaultSettings: AppSettings = {
   country: 'الجمهورية اليمنية',
   ministry: 'وزارة التربية والتعليم',
-  governorate: 'محافظة ...',
-  directorate: 'مديرية ...',
+  governorate: 'أمانة العاصمة (صنعاء)',
+  directorate: 'السبعين',
   schoolName: 'مدرسة أبي ذر الغفاري',
   principalName: 'أ. مدير المدرسة',
   schoolSealText: 'الختم الرسمي للمدرسة',
-  year: '2025 / 2026',
+  year: '2025 / 2026', // Standardised school year
   numberLanguage: 'arabic',
   highlightColor: '#FFE1BEE7',
   showHeader: true,
   showMirror: true,
   showWatermark: true,
   showFrame: true,
+  theme: 'emerald',
+  currentFont: 'var(--font-sans)',
+  isActivated: false,
+  licenseKey: '',
+  customLogo: '',
+  customSeal: '',
   maxPoints: {
     homework: 20,
     attendance: 20,
     oral: 20,
     written: 40,
-    behavior: 0 // Optional extra depending on specific configuration
-  }
+    behavior: 0
+  },
+  evaluationPeriods: [
+    { id: 'month1', name: 'الشهر الأول' },
+    { id: 'month2', name: 'الشهر الثاني' },
+    { id: 'month3', name: 'الشهر الثالث' }
+  ]
 };
 
 const defaultStudents: Student[] = [
@@ -46,22 +60,18 @@ const defaultStudents: Student[] = [
     name: 'طالب تجريبي 1',
     gender: 'ذكر',
     birthDate: '2010/01/01',
-    birthPlace: 'المدينة',
+    birthPlace: 'صنعاء',
     guardian: 'ولي الأمر 1',
     schoolYear: '2025 / 2026',
-    grade6: { year: '2022 / 2023', school: 'مدرسة سابقة', governorate: 'محافظة', directorate: 'مديرية' },
-    grade7: { year: '2023 / 2024', school: 'مدرسة سابقة', governorate: 'محافظة', directorate: 'مديرية' },
-    grade8: { year: '2024 / 2025', school: 'مدرسة سابقة', governorate: 'محافظة', directorate: 'مديرية' },
+    grade6: { year: '2022 / 2023', school: 'مدرسة سابقة', governorate: 'أمانة العاصمة (صنعاء)', directorate: 'السبعين' },
+    grade7: { year: '2023 / 2024', school: 'مدرسة سابقة', governorate: 'أمانة العاصمة (صنعاء)', directorate: 'السبعين' },
+    grade8: { year: '2024 / 2025', school: 'مدرسة سابقة', governorate: 'أمانة العاصمة (صنعاء)', directorate: 'السبعين' },
     grades: {
       month1: { homework: 20, attendance: 20, oral: 20, written: 40 }
     },
     accounting: {
       totalFees: 50000,
-      paidFees: 20000,
-      transactions: [
-        { id: 't1', date: '2025-01-01', amount: 50000, type: 'charge', note: 'رسوم دراسية' },
-        { id: 't2', date: '2025-02-15', amount: 20000, type: 'payment', note: 'دفعة أولى' }
-      ]
+      paidFees: 20000
     }
   },
   {
@@ -69,7 +79,7 @@ const defaultStudents: Student[] = [
     name: 'طالبة تجريبية 2',
     gender: 'أنثى',
     birthDate: '2010/05/15',
-    birthPlace: 'المدينة',
+    birthPlace: 'تعز',
     guardian: 'ولي الأمر 2',
     schoolYear: '2025 / 2026',
     grades: {
@@ -77,14 +87,21 @@ const defaultStudents: Student[] = [
     },
     accounting: {
       totalFees: 50000,
-      paidFees: 50000,
-      transactions: [
-        { id: 't3', date: '2025-01-01', amount: 50000, type: 'charge', note: 'رسوم دراسية' },
-        { id: 't4', date: '2025-01-10', amount: 50000, type: 'payment', note: 'دفع كامل' }
-      ]
+      paidFees: 50000
     }
   }
 ];
+
+const defaultTransactions: Record<string, Transaction[]> = {
+  '1': [
+    { id: 't1', date: '2025-01-01', amount: 50000, type: 'charge', note: 'رسوم دراسية' },
+    { id: 't2', date: '2025-02-15', amount: 20000, type: 'payment', note: 'دفعة أولى' }
+  ],
+  '2': [
+    { id: 't3', date: '2025-01-01', amount: 50000, type: 'charge', note: 'رسوم دراسية' },
+    { id: 't4', date: '2025-01-10', amount: 50000, type: 'payment', note: 'دفع كامل' }
+  ]
+};
 
 export const useStore = create<AppState>()(
   persist(
@@ -92,26 +109,57 @@ export const useStore = create<AppState>()(
       settings: defaultSettings,
       updateSettings: (updates) => set((state) => ({ settings: { ...state.settings, ...updates } })),
       students: defaultStudents,
+      transactions: defaultTransactions,
       editingStudentId: null,
       setEditingStudentId: (id) => set({ editingStudentId: id }),
-      addStudent: (student) => set((state) => ({ students: [...state.students, student] })),
-      updateStudent: (id, updates) => set((state) => ({
-        students: state.students.map((s) => s.id === id ? { ...s, ...updates } : s)
-      })),
-      deleteStudent: (id) => set((state) => ({
-        students: state.students.filter((s) => s.id !== id)
-      })),
-      updateGrade: (studentId, month, field, value) => set((state) => ({
+      addStudent: (student) => set((state) => {
+        // Separate transactions if nested in the new student object
+        const targetTransactions = student.accounting?.transactions || [];
+        const studentCopy = { ...student };
+        if (studentCopy.accounting) {
+          delete studentCopy.accounting.transactions;
+        }
+        return {
+          students: [...state.students, studentCopy],
+          transactions: {
+            ...state.transactions,
+            [student.id]: targetTransactions
+          }
+        };
+      }),
+      updateStudent: (id, updates) => set((state) => {
+        const studentCopy = { ...updates };
+        let updatedTransactions = { ...state.transactions };
+        
+        if (studentCopy.accounting?.transactions) {
+          updatedTransactions[id] = studentCopy.accounting.transactions;
+          delete studentCopy.accounting.transactions;
+        }
+        
+        return {
+          students: state.students.map((s) => s.id === id ? { ...s, ...studentCopy } : s),
+          transactions: updatedTransactions
+        };
+      }),
+      deleteStudent: (id) => set((state) => {
+        const newTransactions = { ...state.transactions };
+        delete newTransactions[id];
+        return {
+          students: state.students.filter((s) => s.id !== id),
+          transactions: newTransactions
+        };
+      }),
+      updateGrade: (studentId, periodId, field, value) => set((state) => ({
         students: state.students.map((s) => {
           if (s.id === studentId) {
             const currentGrades = s.grades || {};
-            const currentMonth = currentGrades[month] || { homework: null, attendance: null, oral: null, written: null };
+            const currentPeriodGrades = currentGrades[periodId] || { homework: null, attendance: null, oral: null, written: null };
             return {
               ...s,
               grades: {
                 ...currentGrades,
-                [month]: {
-                  ...currentMonth,
+                [periodId]: {
+                  ...currentPeriodGrades,
                   [field]: value
                 }
               }
@@ -120,54 +168,79 @@ export const useStore = create<AppState>()(
           return s;
         })
       })),
-      addTransaction: (studentId, transaction) => set((state) => ({
-        students: state.students.map((s) => {
-          if (s.id === studentId) {
-            const currentAccounting = s.accounting || { totalFees: 0, paidFees: 0, transactions: [] };
-            const newTransaction = {
-              id: Math.random().toString(36).substring(7),
-              date: new Date().toISOString().split('T')[0],
-              amount: transaction.amount,
-              type: transaction.type,
-              note: transaction.note
-            };
-            return {
-              ...s,
-              accounting: {
-                ...currentAccounting,
-                totalFees: transaction.type === 'charge' ? currentAccounting.totalFees + transaction.amount : currentAccounting.totalFees,
-                paidFees: transaction.type === 'payment' ? currentAccounting.paidFees + transaction.amount : currentAccounting.paidFees,
-                transactions: [...(currentAccounting.transactions || []), newTransaction]
-              }
-            };
-          }
-          return s;
-        })
+      addTransaction: (studentId, transaction) => set((state) => {
+        const studentTransactions = state.transactions[studentId] || [];
+        const newTransaction: Transaction = {
+          id: Math.random().toString(36).substring(7),
+          date: new Date().toISOString().split('T')[0],
+          amount: transaction.amount,
+          type: transaction.type,
+          note: transaction.note
+        };
+        const updatedTransactions = [...studentTransactions, newTransaction];
+        
+        return {
+          transactions: {
+            ...state.transactions,
+            [studentId]: updatedTransactions
+          },
+          students: state.students.map((s) => {
+            if (s.id === studentId) {
+              const currentAccounting = s.accounting || { totalFees: 0, paidFees: 0 };
+              return {
+                ...s,
+                accounting: {
+                  ...currentAccounting,
+                  totalFees: transaction.type === 'charge' ? currentAccounting.totalFees + transaction.amount : currentAccounting.totalFees,
+                  paidFees: transaction.type === 'payment' ? currentAccounting.paidFees + transaction.amount : currentAccounting.paidFees
+                }
+              };
+            }
+            return s;
+          })
+        };
+      }),
+      deleteTransaction: (studentId, transactionId) => set((state) => {
+        const studentTransactions = state.transactions[studentId] || [];
+        const transactionToDelete = studentTransactions.find(t => t.id === transactionId);
+        if (!transactionToDelete) return {};
+        
+        const updatedTransactions = studentTransactions.filter(t => t.id !== transactionId);
+        
+        return {
+          transactions: {
+            ...state.transactions,
+            [studentId]: updatedTransactions
+          },
+          students: state.students.map((s) => {
+            if (s.id === studentId && s.accounting) {
+              const currentAccounting = s.accounting;
+              return {
+                ...s,
+                accounting: {
+                  ...currentAccounting,
+                  totalFees: transactionToDelete.type === 'charge' ? currentAccounting.totalFees - transactionToDelete.amount : currentAccounting.totalFees,
+                  paidFees: transactionToDelete.type === 'payment' ? currentAccounting.paidFees - transactionToDelete.amount : currentAccounting.paidFees
+                }
+              };
+            }
+            return s;
+          })
+        };
+      }),
+      importBackup: (backupData) => set(() => ({
+        settings: backupData.settings,
+        students: backupData.students,
+        transactions: backupData.transactions || {}
       })),
-      deleteTransaction: (studentId, transactionId) => set((state) => ({
-        students: state.students.map((s) => {
-          if (s.id === studentId && s.accounting) {
-            const currentAccounting = s.accounting;
-            const transactionToDelete = currentAccounting.transactions?.find(t => t.id === transactionId);
-            
-            if (!transactionToDelete) return s;
-
-            return {
-              ...s,
-              accounting: {
-                ...currentAccounting,
-                totalFees: transactionToDelete.type === 'charge' ? currentAccounting.totalFees - transactionToDelete.amount : currentAccounting.totalFees,
-                paidFees: transactionToDelete.type === 'payment' ? currentAccounting.paidFees - transactionToDelete.amount : currentAccounting.paidFees,
-                transactions: currentAccounting.transactions?.filter(t => t.id !== transactionId) || []
-              }
-            };
-          }
-          return s;
-        })
+      resetAllData: () => set(() => ({
+        settings: defaultSettings,
+        students: [],
+        transactions: {}
       }))
     }),
     {
-      name: 'school-management-storage',
+      name: 'school-management-storage-v2', // Updated to ensure fresh, clean, optimized storage transition
     }
   )
 );
