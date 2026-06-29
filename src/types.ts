@@ -1,4 +1,4 @@
-export type ViewState = 'home' | 'monthly_results' | 'progress_dashboard' | 'card_view' | 'student_list' | 'certificate' | 'student_form' | 'accounting' | 'exam_editor' | 'doc_editor' | 'settings';
+export type ViewState = 'home' | 'monthly_results' | 'progress_dashboard' | 'card_view' | 'student_list' | 'certificate' | 'student_form' | 'accounting' | 'exam_editor' | 'doc_editor' | 'settings' | 'plan' | 'attendance' | 'omr_scanner' | 'spec_table' | 'ai_generator';
 
 export interface AppSettings {
   country: string;
@@ -9,6 +9,23 @@ export interface AppSettings {
   principalName: string;
   schoolSealText: string;
   year: string;
+  
+  // Customization Options from UI XML
+  numberLanguage: 'arabic' | 'hindi'; // '123' | '١٢٣'
+  highlightColor: string;
+  showHeader: boolean;
+  showMirror: boolean;
+  showWatermark: boolean;
+  showFrame: boolean;
+  
+  // Max Points Config
+  maxPoints: {
+    homework: number;
+    attendance: number;
+    oral: number;
+    written: number;
+    behavior: number;
+  };
 }
 
 export interface Student {

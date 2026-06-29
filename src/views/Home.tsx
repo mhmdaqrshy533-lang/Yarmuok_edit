@@ -11,13 +11,17 @@ import {
   Users, 
   Calculator, 
   Book, 
+  BookOpen,
   ScrollText, 
   Settings,
   Info,
   CalendarDays,
   MoreVertical,
   Eye,
-  Sigma
+  Sigma,
+  ScanLine,
+  TableProperties,
+  Wand2
 } from 'lucide-react';
 import { ViewState } from '../types';
 import { useStore } from '../store';
@@ -28,14 +32,21 @@ interface HomeProps {
 }
 
 const modules = [
-  { title: 'أرقام الجلوس', subtitle: 'إدارة وعرض أرقام الجلوس', icon: ShieldCheck, view: 'card_view' as ViewState },
-  { title: 'بطاقات التقدم', subtitle: 'عرض وطباعة بطاقات التقدم', icon: ClipboardCheck, view: 'progress_dashboard' as ViewState },
-  { title: 'كشوفات التقدم', subtitle: 'استعراض الكشوفات والتقارير', icon: LineChart, view: 'monthly_results' as ViewState },
-  { title: 'تعبئة بيانات الطلاب', subtitle: 'إدخال وتعديل بيانات الطلاب', icon: UserPen, view: 'student_list' as ViewState },
-  { title: 'الشهادات النهائية', subtitle: 'إصدار شهادات النجاح النهائية', icon: Award, view: 'certificate' as ViewState },
+  { title: 'محرر إمتحانات', subtitle: 'تصميم وطباعة نماذج الاختبارات', icon: Book, view: 'exam_editor' as ViewState },
+  { title: 'نموذجات أتمتة', subtitle: 'نماذج بابل شيت جاهزة', icon: ClipboardCheck, view: 'exam_editor' as ViewState },
+  { title: 'المصحح الآلي (OMR)', subtitle: 'تصحيح أوراق الطلاب عبر الكاميرا', icon: ScanLine, view: 'omr_scanner' as ViewState },
+  { title: 'جدول المواصفات والوزن النسبي', subtitle: 'توزيع الدرجات الوزاري التلقائي', icon: TableProperties, view: 'spec_table' as ViewState },
+  { title: 'توليد اختبارات بالذكاء الاصطناعي', subtitle: 'توليد أسئلة ذكية بدون إنترنت', icon: Wand2, view: 'ai_generator' as ViewState },
+  { title: 'المحصلات الشهرية', subtitle: 'إدارة محصلات الطلاب شهريا', icon: LineChart, view: 'monthly_results' as ViewState },
+  { title: 'حضور وغياب الطلاب', subtitle: 'سجل الحضور والغياب الشهري', icon: Users, view: 'attendance' as ViewState },
+  { title: 'الخطة الفصلية', subtitle: 'إعداد الخطة الفصلية للمعلم', icon: ScrollText, view: 'plan' as ViewState },
+  { title: 'الخطة اليومية', subtitle: 'تحضير الدروس اليومية', icon: FileText, view: 'doc_editor' as ViewState },
+  { title: 'مذكرات رسمية', subtitle: 'تحرير خطابات ومذكرات', icon: ShieldCheck, view: 'doc_editor' as ViewState },
+  { title: 'محرر الكتب والملخصات', subtitle: 'تحرير الملازم والكتب', icon: BookOpen, view: 'doc_editor' as ViewState },
+  { title: 'النتائج النهائية', subtitle: 'إصدار شهادات النجاح', icon: Award, view: 'certificate' as ViewState },
   { title: 'المحاسب المدرسي', subtitle: 'إدارة الرسوم والحسابات', icon: Calculator, view: 'accounting' as ViewState },
-  { title: 'محرر الاختبارات', subtitle: 'تصميم وطباعة نماذج الاختبارات', icon: Book, view: 'exam_editor' as ViewState },
-  { title: 'محرر الوثائق', subtitle: 'إنشاء الخطابات والنماذج الرسمية', icon: ScrollText, view: 'doc_editor' as ViewState },
+  { title: 'قاعدة بيانات الطلاب', subtitle: 'المسجل العام والإدارة', icon: UserPen, view: 'student_list' as ViewState },
+  { title: 'الاعدادات العامة', subtitle: 'الإدخالات الافتراضية', icon: Settings, view: 'settings' as ViewState },
 ];
 
 export default function Home({ setView }: HomeProps) {

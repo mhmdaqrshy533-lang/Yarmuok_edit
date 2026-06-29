@@ -24,7 +24,20 @@ const defaultSettings: AppSettings = {
   schoolName: 'مدرسة أبي ذر الغفاري',
   principalName: 'أ. مدير المدرسة',
   schoolSealText: 'الختم الرسمي للمدرسة',
-  year: '2025 / 2026'
+  year: '2025 / 2026',
+  numberLanguage: 'arabic',
+  highlightColor: '#FFE1BEE7',
+  showHeader: true,
+  showMirror: true,
+  showWatermark: true,
+  showFrame: true,
+  maxPoints: {
+    homework: 20,
+    attendance: 20,
+    oral: 20,
+    written: 40,
+    behavior: 0 // Optional extra depending on specific configuration
+  }
 };
 
 const defaultStudents: Student[] = [

@@ -200,18 +200,60 @@ export default function ExamEditor({ setView }: ExamEditorProps) {
       )}
 
       {/* Context-Aware Toolbar */}
-      {isScience && !showSetupDialog && (
-        <div className={`border-b border-green-500/30 flex items-center justify-center gap-2 px-4 py-2 print:hidden ${theme === 'dark' ? 'bg-gray-900 text-gray-200' : 'bg-white shadow-sm text-gray-800'}`} dir="rtl">
-           <span className="text-xs font-bold text-green-500 flex items-center gap-1"><Wand2 className="w-3 h-3"/> أدوات علمية:</span>
-           {['√', '∞', '∫', 'π', '∑', 'θ', 'λ', '±', '×', '÷', '≈', '≠'].map(sym => (
-             <button key={sym} className={`w-8 h-8 flex items-center justify-center rounded shadow-sm font-bold font-serif text-lg ${theme === 'dark' ? 'bg-black border border-gray-700 hover:border-green-500 hover:text-green-400' : 'bg-gray-50 border border-gray-300 hover:border-green-500 hover:text-green-600'} transition-all active:scale-95`}>
-               {sym}
+      {!showSetupDialog && (
+        <div className={`border-b ${theme === 'dark' ? 'border-emerald-500/30 bg-[#0f291e] text-emerald-50' : 'border-emerald-200 bg-emerald-50 text-emerald-900'} flex flex-wrap items-center justify-center gap-2 px-4 py-2 print:hidden shadow-sm`} dir="rtl">
+           <span className={`text-xs font-bold flex items-center gap-1 ${theme === 'dark' ? 'text-emerald-400' : 'text-emerald-700'}`}>
+             <Wand2 className="w-3 h-3"/> رموز علمية متطورة:
+           </span>
+           
+           <div className="flex flex-wrap gap-2 items-center">
+             <button className={`px-3 py-1.5 flex items-center gap-1 rounded shadow-sm text-xs font-bold transition-all active:scale-95 ${theme === 'dark' ? 'bg-[#1a2320] border border-emerald-900 hover:border-emerald-500 hover:text-emerald-400' : 'bg-white border border-emerald-200 hover:border-emerald-500 hover:text-emerald-700'}`}>
+               معادلات رياضيات
              </button>
-           ))}
-           <div className={`h-6 w-px mx-2 ${theme === 'dark' ? 'bg-gray-700' : 'bg-gray-300'}`}></div>
-           <button className="flex items-center gap-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-all shadow-md active:scale-95">
-              لوحة الرسم الذكي (Smart Canvas)
-           </button>
+             <button className={`px-3 py-1.5 flex items-center gap-1 rounded shadow-sm text-xs font-bold transition-all active:scale-95 ${theme === 'dark' ? 'bg-[#1a2320] border border-emerald-900 hover:border-emerald-500 hover:text-emerald-400' : 'bg-white border border-emerald-200 hover:border-emerald-500 hover:text-emerald-700'}`}>
+               معادلات كيميائية
+             </button>
+             <button className={`px-3 py-1.5 flex items-center gap-1 rounded shadow-sm text-xs font-bold transition-all active:scale-95 ${theme === 'dark' ? 'bg-[#1a2320] border border-emerald-900 hover:border-emerald-500 hover:text-emerald-400' : 'bg-white border border-emerald-200 hover:border-emerald-500 hover:text-emerald-700'}`}>
+               نص جديد
+             </button>
+           </div>
+           
+           <div className={`h-6 w-px mx-1 ${theme === 'dark' ? 'bg-emerald-900' : 'bg-emerald-200'}`}></div>
+           
+           <div className="flex flex-wrap gap-1 items-center">
+             {['كسر', 'جذور', 'الأسس', 'لوغاريتم', 'النهايات', 'تكامل', 'مقياس', 'تباديل', 'توافيق', 'مجموع'].map(tool => (
+               <button key={tool} className={`px-2 py-1 rounded shadow-sm text-[10px] font-bold transition-all active:scale-95 ${theme === 'dark' ? 'bg-black border border-emerald-900/50 hover:border-emerald-500 hover:bg-emerald-900/20 text-emerald-100' : 'bg-white border border-emerald-200 hover:border-emerald-500 hover:bg-emerald-50 text-emerald-800'}`}>
+                 {tool}
+               </button>
+             ))}
+           </div>
+        </div>
+      )}
+
+      {/* Shortcuts Toolbar */}
+      {!showSetupDialog && (
+        <div className={`border-b ${theme === 'dark' ? 'border-purple-500/30 bg-[#121619]' : 'border-purple-200 bg-white'} overflow-x-auto whitespace-nowrap flex items-center gap-2 px-4 py-2 print:hidden`} dir="rtl">
+           <span className={`text-xs font-bold flex items-center gap-1 ${theme === 'dark' ? 'text-purple-400' : 'text-purple-700'} shrink-0`}>
+             <LayoutTemplate className="w-3 h-3"/> اختصارات (نموذج أسئلة):
+           </span>
+           
+           <div className="flex gap-1 items-center">
+             {[
+               'اكتب من أول سورة (  ) الى قوله تعالى (  ).',
+               'اكمل من قوله تعالى (  ) إلى قوله تعالى (  ).',
+               'اذكر معاني الكلمات الاتيه :-',
+               'اذكر سبب نزول قوله تعالى (   )',
+               'اشرح بإيجاز قوله تعالى (   ) .',
+               'ضع علامة ( ✓ ) أمام العبارة الصحيحة وعلامة ( X ) امام العبارة الخاطئة في ما ياتي :-',
+               'اختر الاجابة الصحيحة من بين الاقواس :-',
+               'اكمل الفراغ بالكلمة المناسبة في كلٍ مما ياتي :-',
+               'عرف كلاً مما يلي :-'
+             ].map((shortcut, idx) => (
+               <button key={idx} title={shortcut} className={`px-3 py-1.5 rounded shadow-sm text-xs font-bold transition-all active:scale-95 shrink-0 ${theme === 'dark' ? 'bg-[#1a2320] border border-purple-900 hover:border-purple-500 hover:text-purple-400 text-gray-300' : 'bg-gray-50 border border-purple-200 hover:border-purple-500 hover:text-purple-700 text-gray-700'}`}>
+                 {shortcut.substring(0, 25)}...
+               </button>
+             ))}
+           </div>
         </div>
       )}
 

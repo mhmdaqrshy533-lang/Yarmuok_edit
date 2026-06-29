@@ -10,6 +10,11 @@ import Accounting from './views/Accounting';
 import ExamEditor from './views/ExamEditor';
 import DocEditor from './views/DocEditor';
 import Settings from './views/Settings';
+import Plan from './views/Plan';
+import Attendance from './views/Attendance';
+import OMRScanner from './views/OMRScanner';
+import SpecTable from './views/SpecTable';
+import AIGenerator from './views/AIGenerator';
 import { ViewState } from './types';
 
 export default function App() {
@@ -30,6 +35,11 @@ export default function App() {
         {currentView === 'exam_editor' && <ExamEditor setView={setCurrentView} />}
         {currentView === 'doc_editor' && <DocEditor setView={setCurrentView} />}
         {currentView === 'settings' && <Settings setView={setCurrentView} />}
+        {currentView === 'plan' && <Plan setView={setCurrentView} />}
+        {currentView === 'attendance' && <Attendance setView={setCurrentView} />}
+        {currentView === 'omr_scanner' && <OMRScanner setView={setCurrentView} />}
+        {currentView === 'spec_table' && <SpecTable setView={setCurrentView} />}
+        {currentView === 'ai_generator' && <AIGenerator setView={setCurrentView} />}
       </div>
     </div>
   );
